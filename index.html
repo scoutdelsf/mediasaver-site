@@ -304,6 +304,8 @@
       <h3>我的電腦安裝狀態</h3>
       <p id="localVersionStatus">正在檢查 MediaSaver Chrome 擴充功能…</p>
       <p id="installedExtensionVersion" style="margin-top:12px;color:#60a5fa"></p>
+      <p id="extensionComparisonStatus" style="margin-top:8px"></p>
+      <p id="extensionBaselineStatus" style="margin-top:8px;font-size:12px"></p>
       <button id="checkExtensionButton" class="btn" type="button" style="margin-top:15px">重新檢查擴充功能</button>
       <hr style="border:0;border-top:1px solid var(--border);margin:22px 0">
       <h3>本機下載環境</h3>
@@ -366,13 +368,64 @@
 
 <script>
   "use strict";
-  const FALLBACK_SITE_VERSION = "0.1.5";
+  const FALLBACK_SITE_VERSION = "0.1.6";
   const MS_CHANNEL = "MEDIASAVER_INSTALL_CENTER_V1";
   let extensionCheckId = "";
   let extensionCheckTimer = null;
   let hostCheckId = "";
   let hostCheckTimer = null;
   let bridgeReady = false;
+  let installedExtensionVersion = null;
+  let remoteReleaseVersion = null;
+  let testBaselineVersion = null;
+  let remoteVersionLoaded = false;
+
+  function compareVersions(a, b) {
+    const valid = /^\d+(?:\.\d+){1,3}$/;
+    if (!valid.test(a) || !valid.test(b)) return null;
+    const x = a.split(".").map(Number);
+    const y = b.split(".").map(Number);
+    for (let i = 0; i < 4; i++) {
+      if ((x[i] || 0) > (y[i] || 0)) return 1;
+      if ((x[i] || 0) < (y[i] || 0)) return -1;
+    }
+    return 0;
+  }
+
+  function updateExtensionComparison() {
+    if (!installedExtensionVersion) {
+      setText("extensionComparisonStatus", "尚未偵測到擴充功能，無法比較版本。");
+      setText("extensionBaselineStatus", "");
+      return;
+    }
+    if (!remoteVersionLoaded) {
+      setText("extensionComparisonStatus", "版本資料尚未取得，無法比較。");
+      setText("extensionBaselineStatus", "");
+      return;
+    }
+    if (remoteReleaseVersion) {
+      const diff = compareVersions(installedExtensionVersion, remoteReleaseVersion);
+      const msg = diff === null ? "版本格式異常，無法比較。" :
+        diff < 0 ? "有新版本可更新（僅顯示資訊，尚未提供自動更新）。" :
+        diff === 0 ? "目前與網站正式發布版本相同。" :
+        "目前安裝版本比網站正式發布版本新（可能為測試版）。";
+      setText("extensionComparisonStatus", msg);
+      setText("extensionBaselineStatus", "網站正式發布版本：v" + remoteReleaseVersion);
+      return;
+    }
+    if (testBaselineVersion) {
+      const diff = compareVersions(installedExtensionVersion, testBaselineVersion);
+      const msg = diff === null ? "版本格式異常，無法比較。" :
+        diff < 0 ? "低於目前測試基準版本（尚無正式安裝包）。" :
+        diff === 0 ? "與目前測試基準版本相同；尚非正式發布版本。" :
+        "高於目前測試基準版本（可能為開發版本）。";
+      setText("extensionComparisonStatus", msg);
+      setText("extensionBaselineStatus", "測試基準：v" + testBaselineVersion + "（不代表公開最新版）");
+      return;
+    }
+    setText("extensionComparisonStatus", "網站尚未設定可比較的版本。");
+    setText("extensionBaselineStatus", "");
+  }
 
   function setText(id, value) {
     const element = document.getElementById(id);
@@ -391,6 +444,12 @@
       const response = await fetch("./version.json?cache=" + Date.now(), {cache:"no-store"});
       if (!response.ok) throw new Error("HTTP " + response.status);
       const data = await response.json();
+      const component = data.components?.chromeExtension || {};
+      const appReleased = !!data.application?.latestVersion && data.application?.status !== "not_published";
+      remoteReleaseVersion = appReleased && typeof component.latestVersion === "string" ? component.latestVersion : null;
+      testBaselineVersion = typeof component.testBaselineVersion === "string" ? component.testBaselineVersion : null;
+      remoteVersionLoaded = true;
+      updateExtensionComparison();
       const siteVersion = data.website?.version || FALLBACK_SITE_VERSION;
       showWebsiteVersion(siteVersion);
       setText("websiteVersionStatus", data.website?.status === "development" ? "網站持續開發中" : "網站版本資料已載入");
@@ -414,6 +473,8 @@
       }
       setText("versionError", "");
     } catch (error) {
+      remoteVersionLoaded = false;
+      updateExtensionComparison();
       setText("websiteVersionStatus", "版本資料讀取失敗");
       setText("applicationLatestVersion", "無法取得");
       setText("applicationVersionStatus", "請稍後再試");
@@ -445,7 +506,9 @@
     const requestId = (crypto.randomUUID ? crypto.randomUUID() : Date.now().toString(36) + Math.random().toString(36).slice(2));
     extensionCheckId = requestId;
     setText("localVersionStatus", "正在檢查 Chrome 擴充功能…");
+    installedExtensionVersion = null;
     setText("installedExtensionVersion", "");
+    updateExtensionComparison();
     bridgeReady = false;
     document.getElementById("checkHostButton").disabled = true;
     setText("hostStatus", "等待擴充功能連線…");
@@ -488,7 +551,9 @@
     extensionCheckTimer = null;
     extensionCheckId = "";
     setText("localVersionStatus", "已偵測到 MediaSaver Chrome 擴充功能。");
+    installedExtensionVersion = data.extensionVersion;
     setText("installedExtensionVersion", "安裝版本：v" + data.extensionVersion);
+    updateExtensionComparison();
     bridgeReady = true;
     document.getElementById("checkHostButton").disabled = false;
     checkLocalHost();
