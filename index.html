@@ -180,6 +180,30 @@
       color: var(--muted);
     }
 
+    .version-tag {
+      display: inline-block;
+      margin-left: 8px;
+      padding: 2px 9px;
+      border-radius: 7px;
+      background: #243b60;
+      color: #93c5fd;
+      font-size: 12px;
+      font-weight: 600;
+      vertical-align: middle;
+    }
+
+    .platform-notice {
+      max-width: 480px;
+      margin: 18px auto;
+      padding: 12px 20px;
+      border: 1px solid #29354c;
+      border-radius: 10px;
+      background: #151d31;
+      color: #cbd5e1;
+      font-size: 14px;
+      line-height: 2;
+    }
+    
     footer {
       text-align: center;
       padding: 30px;
@@ -199,7 +223,9 @@
 
 <header>
   <div class="nav">
-    <div class="logo">⬇ MediaSaver</div>
+    <div class="logo">⬇ MediaSaver
+      <span id="siteVersion" class="version-tag"></span>
+    </div>
     <nav aria-label="主要導覽">
       <a href="#install">首次安裝</a>
       <a href="#version">版本檢查</a>
@@ -211,7 +237,11 @@
 
 <main>
   <section class="hero">
-    <span class="eyebrow">Windows ＋ Google Chrome</span>
+    <span class="eyebrow">Windows 10 / 11 ＋ Google Chrome</span>
+    <p class="platform-notice">
+      ✅ Windows：目前支援<br>
+      ⏳ macOS（Mac 電腦）：尚未支援，規劃中
+    </p>
     <h1>MediaSaver 安裝與更新中心</h1>
     <p>
       集中管理 MediaSaver 的安裝教學、版本資訊、
@@ -309,9 +339,20 @@
 
 <footer>
   MediaSaver © 2026 · 個人影音管理工具
+  <span id="footerVersion"></span>
   <br>
   請遵守平台使用條款及相關著作權規範。
 </footer>
+<script>
+  // MediaSaver 網站版本
+  // 每次修改網站並發布時，更新這個數字
+  const SITE_VERSION = "0.1.2";
 
+  document.getElementById("siteVersion").textContent =
+    "v" + SITE_VERSION;
+
+  document.getElementById("footerVersion").textContent =
+    "｜網站版本 v" + SITE_VERSION;
+</script>
 </body>
 </html>
