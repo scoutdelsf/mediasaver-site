@@ -1,16 +1,22 @@
 {
   "schemaVersion": 1,
   "website": {
-    "version": "0.2.2",
+    "version": "0.2.3",
     "status": "development"
   },
   "application": {
     "name": "MediaSaver",
-    "latestVersion": null,
-    "releaseDate": null,
-    "status": "not_published",
-    "downloadUrl": null,
-    "changelog": [],
+    "latestVersion": "1.0.0-beta.1",
+    "releaseDate": "2026-10-19",
+    "status": "beta",
+    "downloadUrl": "https://github.com/scoutdelsf/mediasaver-site/releases/download/windows-beta-1/MediaSaver-Windows-Beta-20261019-192041.zip",
+    "changelog": [
+      "Windows Beta 1 安裝包已發布於 GitHub Releases",
+      "新版固定 Chrome 擴充功能 ID，保留舊版使用者的安裝與授權",
+      "支援 YouTube、Facebook、Instagram、Threads（Threads 需要隨附解析外掛）",
+      "包含 MP4、MP3、JPG 下載、進度顯示、取消下載及下載資料夾入口",
+      "安裝中心提供安裝檔案完整性與本機環境檢查"
+    ],
     "sha256": null
   },
   "platforms": {
@@ -26,7 +32,7 @@
   },
   "components": {
     "chromeExtension": {
-      "latestVersion": null,
+      "latestVersion": "1.4.4",
       "testBaselineVersion": "1.4.4"
     },
     "nativeHost": {
