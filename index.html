@@ -378,7 +378,7 @@
 
 <script>
   "use strict";
-  const FALLBACK_SITE_VERSION = "0.1.9";
+  const FALLBACK_SITE_VERSION = "0.2.0";
   const MS_CHANNEL = "MEDIASAVER_INSTALL_CENTER_V1";
   let extensionCheckId = "";
   let extensionCheckTimer = null;
@@ -576,75 +576,90 @@
     const btn = document.getElementById("chooseFolderButton");
     results.replaceChildren();
     if (typeof window.showDirectoryPicker !== "function") {
-      status.textContent = "此瀏覽器不支援直接選取資料夾。請使用新版桌面 Chrome 開啟 HTTPS 網站。";
+      status.textContent = "請使用新版桌面 Chrome 開啟本網站，才能選取資料夾。";
       return;
     }
+    const extensionFiles = ["manifest.json", "background.js", "content.js", "site-bridge.js"];
+    const tools = ["MediaSaverHost.exe", "yt-dlp.exe", "ffmpeg.exe", "ffprobe.exe"];
     try {
       btn.disabled = true;
+      status.textContent = "正在檢查資料夾及子資料夾…";
       const folder = await window.showDirectoryPicker({mode:"read"});
-      // Accept both original flat folders and the new release layout.
-      const extensionFiles = ["manifest.json", "background.js", "content.js", "site-bridge.js"];
-      const tools = ["MediaSaverHost.exe", "yt-dlp.exe", "ffmpeg.exe", "ffprobe.exe"];
-      const rootEntries = new Map();
-      for await (const [name, handle] of folder.entries()) {
-        rootEntries.set(name.toLowerCase(), handle);
-      }
-      const rootFile = name => rootEntries.get(name.toLowerCase())?.kind === "file";
-      const allRootExtension = extensionFiles.every(rootFile);
-      const subfolders = [];
-      for (const [name, handle] of rootEntries.entries()) {
-        if (handle.kind !== "directory") continue;
-        const found = new Set();
-        for await (const [fileName, child] of handle.entries()) {
-          if (child.kind === "file") found.add(fileName.toLowerCase());
+      // Build a shallow directory index. Do not read file contents or upload files.
+      // Three nested levels are enough for common ZIP extraction layouts.
+      const directories = [];
+      const errors = [];
+      const scan = async (handle, path, depth) => {
+        const files = new Set();
+        const children = [];
+        try {
+          for await (const [name, entry] of handle.entries()) {
+            if (entry.kind === "file") files.add(name.toLowerCase());
+            else if (entry.kind === "directory") children.push([name, entry]);
+          }
+        } catch (e) {
+          errors.push(path + "：" + String(e.message || e));
         }
-        const score = extensionFiles.filter(n => found.has(n.toLowerCase())).length;
-        subfolders.push({ name: handle.name, found, score });
-      }
-      // Detect contents, not a folder's spelling: support MediaSaver-Extension,
-      // MediaSaver-Extention, Chrome-extension and other user-assigned names.
-      subfolders.sort((a, b) => b.score - a.score);
-      const selectedFolder = !allRootExtension && subfolders.length && subfolders[0].score > 0
-        ? subfolders[0] : null;
+        directories.push({path, files});
+        if (depth < 3) {
+          for (const [name, child] of children) {
+            await scan(child, path + "/" + name, depth + 1);
+          }
+        }
+      };
+      await scan(folder, folder.name, 0);
+      // Find the directory with most recognized extension files, regardless
+      // of its name or whether it is nested under a second extracted folder.
+      const ranked = directories.map(d => ({
+        ...d,
+        score: extensionFiles.filter(n => d.files.has(n.toLowerCase())).length
+      })).sort((x,y) => y.score - x.score);
+      const ext = ranked.find(d => d.score > 0) || null;
+      // Native host tools are expected in the package root, but allow a
+      // nested package folder when a ZIP added an extra wrapping directory.
+      const rankedTools = directories.map(d => ({
+        ...d,
+        score: tools.filter(n => d.files.has(n.toLowerCase())).length
+      })).sort((x,y) => y.score - x.score);
+      const toolDir = rankedTools.find(d => d.score > 0) || null;
       const ul = document.createElement("ul");
       ul.style.paddingLeft = "21px";
-      let missingRequired = 0;
-      const addRow = (name, ok, required = true, where = "") => {
-        if (!ok && required) missingRequired++;
+      let missing = 0;
+      const row = (name, exists, required, path) => {
+        if (required && !exists) missing++;
         const li = document.createElement("li");
-        li.textContent = (ok ? "✓ " : required ? "✗ " : "– ") + name +
-          (where ? "（" + where + "）" : "") +
-          (ok ? "：存在" : required ? "：缺少必要檔案" : "：選用／由安裝器產生");
-        li.style.color = !ok && required ? "#fca5a5" : "#cbd5e1";
+        li.textContent = (exists ? "✓ " : required ? "✗ " : "– ") + name +
+          "（" + (path || "未找到") + "）" +
+          (exists ? "：存在" : required ? "：缺少必要檔案" : "：選用");
+        li.style.color = exists ? "#cbd5e1" : required ? "#fca5a5" : "#cbd5e1";
         ul.appendChild(li);
       };
-      if (selectedFolder) {
-        const note = document.createElement("p");
-        note.textContent = "偵測到擴充功能資料夾：「" + selectedFolder.name + "」。";
-        note.style.color = "#86efac";
-        results.appendChild(note);
-      }
-      for (const name of extensionFiles) {
-        const found = selectedFolder
-          ? selectedFolder.found.has(name.toLowerCase())
-          : rootFile(name);
-        addRow(name, found, true, selectedFolder ? selectedFolder.name : "根目錄");
-      }
-      for (const name of tools) addRow(name, rootFile(name), true, "根目錄");
-      // Accept the fixed-ID authorization script, older installer, or no installer yet.
-      const script = rootFile("安裝固定ID授權.ps1") || rootFile("開始安裝.cmd") || rootFile("Setup.ps1");
-      addRow("安裝腳本", !!script, false, "安裝固定ID授權.ps1／開始安裝.cmd／Setup.ps1");
-      addRow("native-host.json", rootFile("native-host.json"), false);
+      const extPath = ext ? ext.path : null;
+      const toolPath = toolDir ? toolDir.path : null;
+      for (const name of extensionFiles)
+        row(name, !!ext?.files.has(name.toLowerCase()), true, extPath);
+      for (const name of tools)
+        row(name, !!toolDir?.files.has(name.toLowerCase()), true, toolPath);
+      const installerNames = ["安裝固定id授權.ps1", "開始安裝.cmd", "setup.ps1"];
+      const installer = directories.find(d => installerNames.some(n => d.files.has(n)));
+      row("安裝腳本", !!installer, false, installer?.path);
+      const manifestHost = directories.find(d => d.files.has("native-host.json"));
+      row("native-host.json", !!manifestHost, false, manifestHost?.path);
       results.appendChild(ul);
-      status.textContent = "已檢查「" + folder.name + "」：" + (missingRequired ?
-        "缺少 " + missingRequired + " 個必要檔案，暫時不建議安裝。" :
-        "基本檔案齊全（僅檢查存在，不代表已安裝成功）。");
+      const note = document.createElement("p");
+      note.style.whiteSpace = "pre-wrap";
+      note.style.fontSize = "13px";
+      note.style.color = "#a7b3ca";
+      note.textContent = "資料夾搜尋範圍（最多三層）：\n" +
+        directories.map(d => "• " + d.path + "（檔案 " + d.files.size + " 個）").join("\n") +
+        (errors.length ? "\n讀取失敗：\n" + errors.join("\n") : "");
+      results.appendChild(note);
+      status.textContent = "已檢查「" + folder.name + "」：" + (missing
+        ? "缺少 " + missing + " 個必要檔案。請查看下方搜尋到的資料夾路徑。"
+        : "必要檔案齊全（僅檢查檔名，未驗證檔案內容及安裝狀態）。");
     } catch (error) {
-      if (error && error.name === "AbortError") {
-        status.textContent = "已取消選擇資料夾。";
-      } else {
-        status.textContent = "無法檢查資料夾：" + String(error.message || error);
-      }
+      status.textContent = error?.name === "AbortError" ?
+        "已取消選擇資料夾。" : "無法檢查資料夾：" + String(error.message || error);
     } finally {
       btn.disabled = false;
     }
