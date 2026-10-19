@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "website": {
-    "version": "0.2.1",
+    "version": "0.2.2",
     "status": "development"
   },
   "application": {
@@ -10,7 +10,8 @@
     "releaseDate": null,
     "status": "not_published",
     "downloadUrl": null,
-    "changelog": []
+    "changelog": [],
+    "sha256": null
   },
   "platforms": {
     "windows": {
@@ -26,7 +27,7 @@
   "components": {
     "chromeExtension": {
       "latestVersion": null,
-      "testBaselineVersion": "1.4.2"
+      "testBaselineVersion": "1.4.4"
     },
     "nativeHost": {
       "latestVersion": null
