@@ -284,9 +284,9 @@
       <p>先將安裝包解壓縮，再選擇解壓後的 MediaSaver 資料夾。網站只會檢查檔名是否存在；不會上傳檔案，也不會執行安裝。</p>
       <button id="chooseFolderButton" class="btn" type="button" style="margin-top:14px">選擇 MediaSaver 資料夾並檢查</button>
       <p id="folderCheckStatus" style="margin-top:12px" role="status">尚未選擇資料夾。</p>
-      <p style="font-size:13px;color:#a7b3ca">新版固定 ID 安裝包：請選外層「MediaSaver 新朋友安裝包」，不要選裡面的 MediaSaver-Extension。</p>
+      <p style="font-size:13px;color:#a7b3ca">新版固定 ID 安裝包：請選外層「MediaSaver 新朋友安裝包」。網站會自動偵測內層擴充功能資料夾，資料夾名稱不必固定。</p>
       <div id="folderCheckResults" style="margin-top:10px"></div>
-      <p style="font-size:12px;margin-top:12px">支援兩種結構：擴充功能四個檔案放在根目錄，或放在 MediaSaver-Extension 子資料夾；四個 EXE 保持在根目錄。安裝後請勿任意移動或重新命名資料夾，否則需要重新指定 Chrome 擴充功能路徑或重新註冊本機程式。此檢查無法證明 EXE 安全或已正確安裝。</p>
+      <p style="font-size:12px;margin-top:12px">支援兩種結構：擴充功能四個檔案放在根目錄，或集中放在同一個子資料夾（不限子資料夾名稱）；四個 EXE 保持在根目錄。安裝後請勿任意移動或重新命名資料夾，否則需要重新指定 Chrome 擴充功能路徑或重新註冊本機程式。此檢查無法證明 EXE 安全或已正確安裝。</p>
     </div>
 
     <p class="notice">
@@ -378,7 +378,7 @@
 
 <script>
   "use strict";
-  const FALLBACK_SITE_VERSION = "0.1.8";
+  const FALLBACK_SITE_VERSION = "0.1.9";
   const MS_CHANNEL = "MEDIASAVER_INSTALL_CENTER_V1";
   let extensionCheckId = "";
   let extensionCheckTimer = null;
@@ -589,18 +589,23 @@
       for await (const [name, handle] of folder.entries()) {
         rootEntries.set(name.toLowerCase(), handle);
       }
-      const extensionDir = rootEntries.get("mediasaver-extension") ||
-                           rootEntries.get("chrome-extension");
-      const extensionEntries = new Set();
-      if (extensionDir && extensionDir.kind === "directory") {
-        for await (const [name, handle] of extensionDir.entries()) {
-          if (handle.kind === "file") extensionEntries.add(name.toLowerCase());
-        }
-      }
       const rootFile = name => rootEntries.get(name.toLowerCase())?.kind === "file";
-      const nestedFile = name => extensionEntries.has(name.toLowerCase());
-      const nested = extensionFiles.every(nestedFile);
-      const flat = extensionFiles.every(rootFile);
+      const allRootExtension = extensionFiles.every(rootFile);
+      const subfolders = [];
+      for (const [name, handle] of rootEntries.entries()) {
+        if (handle.kind !== "directory") continue;
+        const found = new Set();
+        for await (const [fileName, child] of handle.entries()) {
+          if (child.kind === "file") found.add(fileName.toLowerCase());
+        }
+        const score = extensionFiles.filter(n => found.has(n.toLowerCase())).length;
+        subfolders.push({ name: handle.name, found, score });
+      }
+      // Detect contents, not a folder's spelling: support MediaSaver-Extension,
+      // MediaSaver-Extention, Chrome-extension and other user-assigned names.
+      subfolders.sort((a, b) => b.score - a.score);
+      const selectedFolder = !allRootExtension && subfolders.length && subfolders[0].score > 0
+        ? subfolders[0] : null;
       const ul = document.createElement("ul");
       ul.style.paddingLeft = "21px";
       let missingRequired = 0;
@@ -613,10 +618,17 @@
         li.style.color = !ok && required ? "#fca5a5" : "#cbd5e1";
         ul.appendChild(li);
       };
-      const useNested = nested || (!flat && extensionDir?.kind === "directory");
+      if (selectedFolder) {
+        const note = document.createElement("p");
+        note.textContent = "偵測到擴充功能資料夾：「" + selectedFolder.name + "」。";
+        note.style.color = "#86efac";
+        results.appendChild(note);
+      }
       for (const name of extensionFiles) {
-        addRow(name, useNested ? nestedFile(name) : rootFile(name), true,
-          useNested ? extensionDir.name : "根目錄");
+        const found = selectedFolder
+          ? selectedFolder.found.has(name.toLowerCase())
+          : rootFile(name);
+        addRow(name, found, true, selectedFolder ? selectedFolder.name : "根目錄");
       }
       for (const name of tools) addRow(name, rootFile(name), true, "根目錄");
       // Accept the fixed-ID authorization script, older installer, or no installer yet.
