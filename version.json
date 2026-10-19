@@ -1,22 +1,22 @@
 {
   "schemaVersion": 1,
   "website": {
-    "version": "0.2.5",
+    "version": "0.2.6",
     "status": "development"
   },
   "application": {
     "name": "MediaSaver",
-    "latestVersion": "1.0.0-beta.2",
+    "latestVersion": "1.0.0-beta.2.1",
     "releaseDate": "2026-10-19",
     "status": "beta",
-    "downloadUrl": "https://github.com/scoutdelsf/mediasaver-site/releases/download/windows-beta-2/MediaSaver-Windows-Beta-20261019-200246.zip",
+    "downloadUrl": "https://github.com/scoutdelsf/mediasaver-site/releases/download/windows-beta-2.1/MediaSaver-Windows-Beta-20261019-202358.zip",
     "changelog": [
-      "Windows Beta 2：首次安裝器將本機程式安裝至使用者自己的 AppData",
-      "自動設定 Chrome Native Messaging，並保留既有擴充功能 ID 授權",
-      "新使用者採用固定 Chrome 擴充功能 ID",
-      "隨附 yt-dlp、FFmpeg 與 Threads 解析外掛",
-      "支援 MP4、MP3、JPG、下載取消及開啟下載資料夾",
-      "保留網站安裝引導、資料夾完整性檢查與本機狀態檢查"
+      "Windows Beta 2.1：修正首次安裝器寫入 Chrome Native Messaging 登錄機碼時發生的錯誤",
+      "安裝程式自動將本機工具部署至使用者自己的 AppData，並驗證登錄資訊",
+      "保留既有 Chrome 擴充功能 ID 授權，新增固定 ID",
+      "包含 yt-dlp、FFmpeg 及 Threads 解析外掛",
+      "保留 MP4、MP3、JPG、取消下載、開啟資料夾等功能",
+      "保留網站首次安裝引導、資料夾完整性檢查與本機狀態診斷"
     ],
     "sha256": null
   },
