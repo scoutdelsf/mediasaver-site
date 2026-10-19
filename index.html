@@ -256,7 +256,7 @@
   <section id="install" class="section">
     <h2>首次安裝</h2>
     <p class="notice">新版安裝包可雙擊 <strong>開始安裝.cmd</strong> 完成本機授權，不需右鍵選擇 PowerShell；Chrome 擴充功能仍須手動載入。如 Apex One 阻擋，請先檢查警告內容，不要關閉防護。</p>
-    <p>未來將依照下列步驟完成安裝。</p>
+    <p>請依照下列步驟安裝 Windows Beta 1。</p>
     <div class="grid">
       <div class="card">
         <div class="num">01</div>
@@ -300,7 +300,7 @@
     </div>
 
     <p class="notice">
-      下載連結只有在正式設定且驗證發行資產後才會啟用；目前請勿將測試包視為已正式發布。
+      本次為 Windows Beta 1 預先發布版，安裝前請檢查 GitHub Release 來源與安全軟體警告。
       請勿下載其他來源宣稱為 MediaSaver 的安裝檔。
       不需要關閉防毒軟體或防火牆。
     </p>
@@ -315,7 +315,7 @@
         <p id="websiteVersionStatus">正在讀取 version.json…</p>
       </div>
       <div class="card">
-        <h3>MediaSaver 程式最新版本</h3>
+        <h3>MediaSaver 安裝包發布版本</h3>
         <div id="applicationLatestVersion" style="font-size:30px;font-weight:800;color:#60a5fa">讀取中…</div>
         <p id="applicationVersionStatus">正在取得發布資訊</p>
       </div>
@@ -388,7 +388,7 @@
 
 <script>
   "use strict";
-  const FALLBACK_SITE_VERSION = "0.2.2";
+  const FALLBACK_SITE_VERSION = "0.2.3";
   const MS_CHANNEL = "MEDIASAVER_INSTALL_CENTER_V1";
   let extensionCheckId = "";
   let extensionCheckTimer = null;
@@ -500,7 +500,7 @@
       }
       const released = !!app.latestVersion && app.status !== "not_published";
       setText("applicationLatestVersion", released ? "v" + app.latestVersion : "尚未正式發布");
-      setText("applicationVersionStatus", released ? "最新發布版本" : "目前仍在測試階段");
+      setText("applicationVersionStatus", released ? (app.status === "beta" ? "Windows Beta 1（預先發布版）" : "最新正式發布版本") : "目前仍在測試階段");
       setText("releaseDate", "發布日期：" + (app.releaseDate || "尚未發布"));
       const changelog = document.getElementById("changelog");
       changelog.replaceChildren();
