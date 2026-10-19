@@ -280,6 +280,17 @@
       </div>
     </div>
 
+    <div class="card" id="guidedInstall" style="margin:18px 0;border-color:#36587b">
+      <h3>Windows Beta 1 安裝引導</h3>
+      <p>依序完成下列步驟。網頁不會在背景執行安裝指令，也不會上傳你的檔案。</p>
+      <div class="actions" style="justify-content:flex-start;margin:14px 0">
+        <button id="guidePrevious" type="button" class="btn" disabled>上一步</button>
+        <button id="guideNext" type="button" class="btn primary">下一步</button>
+      </div>
+      <p id="guideCounter" style="color:#93c5fd;font-weight:700" role="status">步驟 1 / 6</p>
+      <div id="guideStepContent" style="margin-top:12px"></div>
+    </div>
+
     <div class="card" style="margin-top:18px" id="releaseDownload">
       <h3>下載 MediaSaver Windows 測試版</h3>
       <p id="releaseDownloadStatus">正在查詢 GitHub 發布資訊…</p>
@@ -388,7 +399,7 @@
 
 <script>
   "use strict";
-  const FALLBACK_SITE_VERSION = "0.2.3";
+  const FALLBACK_SITE_VERSION = "0.2.4";
   const MS_CHANNEL = "MEDIASAVER_INSTALL_CENTER_V1";
   let extensionCheckId = "";
   let extensionCheckTimer = null;
@@ -701,6 +712,80 @@
     }
   }
   document.getElementById("chooseFolderButton").addEventListener("click", inspectInstallFolder);
+  // Guided installation: instructional only. All local actions need user approval.
+  const steps = [
+    {
+      title: "下載官方 Windows Beta 安裝包",
+      body: "使用下方「下載 Windows ZIP 安裝包」按鈕。檔案來源為本專案 GitHub Releases；尚未完成下載前請勿繼續安裝。",
+      action: "download"
+    },
+    {
+      title: "解壓縮到固定資料夾",
+      body: "在 Windows 檔案總管對 ZIP 選擇「全部解壓縮」。建議放在不會經常變動的位置，例如文件資料夾內的 MediaSaver。安裝後請不要移動或重新命名，以免 Chrome 與 Native Messaging 找不到程式。",
+      action: "none"
+    },
+    {
+      title: "檢查資料夾內必要檔案",
+      body: "點「選擇資料夾並檢查」，選擇解壓縮後的外層安裝包資料夾。結果應顯示必要檔案齊全。此功能只檢查檔名，不驗證來源、雜湊或程式安全性。",
+      action: "folder"
+    },
+    {
+      title: "將 MediaSaver 載入 Chrome",
+      body: "複製 chrome://extensions/ 到網址列開啟，啟用右上角「開發人員模式」，點「載入未封裝項目」，選擇安裝包中的 MediaSaver 擴充功能子資料夾（裡面有 manifest.json）。新版固定 ID 應為 gpbhkokanibcpnbkjoagljafdefcejbh。不要移除原有的 MediaSaver。",
+      action: "chrome"
+    },
+    {
+      title: "雙擊開始安裝.cmd",
+      body: "回到解壓縮後的外層資料夾，雙擊「開始安裝.cmd」，依照視窗指示完成 Native Messaging 授權。這一步需要本機執行，網站不能直接代你啟動 PowerShell；如遭 Apex One 警告，請先檢查訊息內容，勿關閉防護。",
+      action: "none"
+    },
+    {
+      title: "測試本機連線與下載",
+      body: "重新載入 Chrome 擴充功能並關閉、重開安裝中心分頁。到下方「版本檢查」按「重新檢查擴充功能」及「重新檢查本機程式」，確認 yt-dlp 與 FFmpeg 狀態。最後到你有權下載的影片頁面測試 MP4、取消下載及開啟下載資料夾。",
+      action: "verify"
+    }
+  ];
+  let guideStep = 0;
+  function renderGuide() {
+    const guide = steps[guideStep];
+    document.getElementById("guideCounter").textContent =
+      "步驟 " + (guideStep + 1) + " / " + steps.length;
+    const area = document.getElementById("guideStepContent");
+    area.replaceChildren();
+    const heading = document.createElement("h3");
+    heading.textContent = guide.title;
+    const p = document.createElement("p");
+    p.textContent = guide.body;
+    area.append(heading, p);
+    const row = document.createElement("div");
+    row.style.marginTop = "14px";
+    const btn = document.createElement("button");
+    btn.type = "button";
+    btn.className = "btn";
+    if (guide.action === "download") {
+      btn.textContent = "前往官方下載區";
+      btn.onclick = () => document.getElementById("releaseDownload").scrollIntoView({behavior:"smooth"});
+    } else if (guide.action === "folder") {
+      btn.textContent = "選擇資料夾並檢查";
+      btn.onclick = () => document.getElementById("chooseFolderButton").click();
+    } else if (guide.action === "chrome") {
+      btn.textContent = "複製 Chrome 擴充功能設定網址";
+      btn.onclick = async () => {
+        try { await navigator.clipboard.writeText("chrome://extensions/"); btn.textContent = "已複製，請貼到 Chrome 網址列"; }
+        catch { btn.textContent = "請手動輸入 chrome://extensions/"; }
+      };
+    } else if (guide.action === "verify") {
+      btn.textContent = "前往版本檢查";
+      btn.onclick = () => document.getElementById("version").scrollIntoView({behavior:"smooth"});
+    }
+    if (guide.action !== "none") { row.appendChild(btn); area.appendChild(row); }
+    document.getElementById("guidePrevious").disabled = guideStep === 0;
+    const next = document.getElementById("guideNext");
+    next.textContent = guideStep === steps.length - 1 ? "回到第一步" : "下一步";
+  }
+  document.getElementById("guidePrevious").onclick = () => { guideStep = Math.max(0, guideStep - 1); renderGuide(); };
+  document.getElementById("guideNext").onclick = () => { guideStep = (guideStep + 1) % steps.length; renderGuide(); };
+  renderGuide();
   loadVersionInfo();
   checkMediaSaverExtension();
 </script>
