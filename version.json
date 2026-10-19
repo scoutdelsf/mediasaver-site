@@ -1,0 +1,43 @@
+
+{
+  "schemaVersion": 1,
+  "website": {
+    "version": "0.1.2",
+    "status": "development"
+  },
+  "application": {
+    "name": "MediaSaver",
+    "latestVersion": null,
+    "releaseDate": null,
+    "status": "not_published",
+    "downloadUrl": null,
+    "changelog": []
+  },
+  "platforms": {
+    "windows": {
+      "supported": true,
+      "status": "testing",
+      "minimumVersion": "10"
+    },
+    "macos": {
+      "supported": false,
+      "status": "planned"
+    }
+  },
+  "components": {
+    "chromeExtension": {
+      "latestVersion": null
+    },
+    "nativeHost": {
+      "latestVersion": null
+    },
+    "ytDlp": {
+      "version": null,
+      "updatePolicy": "separate"
+    },
+    "ffmpeg": {
+      "version": null,
+      "updatePolicy": "separate"
+    }
+  }
+}
