@@ -284,12 +284,13 @@
       <p>先將安裝包解壓縮，再選擇解壓後的 MediaSaver 資料夾。網站只會檢查檔名是否存在；不會上傳檔案，也不會執行安裝。</p>
       <button id="chooseFolderButton" class="btn" type="button" style="margin-top:14px">選擇 MediaSaver 資料夾並檢查</button>
       <p id="folderCheckStatus" style="margin-top:12px" role="status">尚未選擇資料夾。</p>
+      <p style="font-size:13px;color:#a7b3ca">新版固定 ID 安裝包：請選外層「MediaSaver 新朋友安裝包」，不要選裡面的 MediaSaver-Extension。</p>
       <div id="folderCheckResults" style="margin-top:10px"></div>
-      <p style="font-size:12px;margin-top:12px">建議解壓縮後不要移動或重新命名資料夾；否則 Chrome 擴充功能路徑或 Native Messaging 註冊可能需要重新設定。此檢查無法證明 EXE 安全或已正確安裝。</p>
+      <p style="font-size:12px;margin-top:12px">支援兩種結構：擴充功能四個檔案放在根目錄，或放在 MediaSaver-Extension 子資料夾；四個 EXE 保持在根目錄。安裝後請勿任意移動或重新命名資料夾，否則需要重新指定 Chrome 擴充功能路徑或重新註冊本機程式。此檢查無法證明 EXE 安全或已正確安裝。</p>
     </div>
 
     <p class="notice">
-      安裝包尚未在此網站發布。
+      正式安裝包尚未在此網站發布；目前僅供本機測試。
       請勿下載其他來源宣稱為 MediaSaver 的安裝檔。
       不需要關閉防毒軟體或防火牆。
     </p>
@@ -377,7 +378,7 @@
 
 <script>
   "use strict";
-  const FALLBACK_SITE_VERSION = "0.1.7";
+  const FALLBACK_SITE_VERSION = "0.1.8";
   const MS_CHANNEL = "MEDIASAVER_INSTALL_CENTER_V1";
   let extensionCheckId = "";
   let extensionCheckTimer = null;
@@ -581,35 +582,47 @@
     try {
       btn.disabled = true;
       const folder = await window.showDirectoryPicker({mode:"read"});
-      const requirements = [
-        ["manifest.json", true],
-        ["background.js", true],
-        ["content.js", true],
-        ["site-bridge.js", true],
-        ["MediaSaverHost.exe", true],
-        ["yt-dlp.exe", true],
-        ["ffmpeg.exe", true],
-        ["ffprobe.exe", true],
-        ["native-host.json", false],
-        ["開始安裝.cmd", false],
-        ["Setup.ps1", false]
-      ];
-      const found = new Set();
+      // Accept both original flat folders and the new release layout.
+      const extensionFiles = ["manifest.json", "background.js", "content.js", "site-bridge.js"];
+      const tools = ["MediaSaverHost.exe", "yt-dlp.exe", "ffmpeg.exe", "ffprobe.exe"];
+      const rootEntries = new Map();
       for await (const [name, handle] of folder.entries()) {
-        if (handle.kind === "file") found.add(name.toLowerCase());
+        rootEntries.set(name.toLowerCase(), handle);
       }
-      let missingRequired = 0;
+      const extensionDir = rootEntries.get("mediasaver-extension") ||
+                           rootEntries.get("chrome-extension");
+      const extensionEntries = new Set();
+      if (extensionDir && extensionDir.kind === "directory") {
+        for await (const [name, handle] of extensionDir.entries()) {
+          if (handle.kind === "file") extensionEntries.add(name.toLowerCase());
+        }
+      }
+      const rootFile = name => rootEntries.get(name.toLowerCase())?.kind === "file";
+      const nestedFile = name => extensionEntries.has(name.toLowerCase());
+      const nested = extensionFiles.every(nestedFile);
+      const flat = extensionFiles.every(rootFile);
       const ul = document.createElement("ul");
       ul.style.paddingLeft = "21px";
-      for (const [name, required] of requirements) {
-        const ok = found.has(name.toLowerCase());
-        if (required && !ok) missingRequired++;
+      let missingRequired = 0;
+      const addRow = (name, ok, required = true, where = "") => {
+        if (!ok && required) missingRequired++;
         const li = document.createElement("li");
         li.textContent = (ok ? "✓ " : required ? "✗ " : "– ") + name +
-          (ok ? "：存在" : required ? "：缺少必要檔案" : "：選用／可能由安裝器產生");
+          (where ? "（" + where + "）" : "") +
+          (ok ? "：存在" : required ? "：缺少必要檔案" : "：選用／由安裝器產生");
         li.style.color = !ok && required ? "#fca5a5" : "#cbd5e1";
         ul.appendChild(li);
+      };
+      const useNested = nested || (!flat && extensionDir?.kind === "directory");
+      for (const name of extensionFiles) {
+        addRow(name, useNested ? nestedFile(name) : rootFile(name), true,
+          useNested ? extensionDir.name : "根目錄");
       }
+      for (const name of tools) addRow(name, rootFile(name), true, "根目錄");
+      // Accept the fixed-ID authorization script, older installer, or no installer yet.
+      const script = rootFile("安裝固定ID授權.ps1") || rootFile("開始安裝.cmd") || rootFile("Setup.ps1");
+      addRow("安裝腳本", !!script, false, "安裝固定ID授權.ps1／開始安裝.cmd／Setup.ps1");
+      addRow("native-host.json", rootFile("native-host.json"), false);
       results.appendChild(ul);
       status.textContent = "已檢查「" + folder.name + "」：" + (missingRequired ?
         "缺少 " + missingRequired + " 個必要檔案，暫時不建議安裝。" :
