@@ -134,7 +134,25 @@
 
     .btn:hover { filter: brightness(1.15); }
 
-    .section { margin: 35px 0 55px; }
+    .section { margin: 24px 0 36px; scroll-margin-top:85px; }
+    .hero { padding: 20px 0 22px; }
+    .hero h1 { font-size:clamp(26px,4vw,36px); margin:8px 0; }
+    .hero .platform-notice { margin:8px auto; padding:6px 12px; }
+    .wizard-progress {height:9px;background:#27344a;border-radius:9px;overflow:hidden;margin:12px 0 18px}
+    .wizard-progress > div {height:100%;width:16.66%;background:#60a5fa;transition:width .2s ease}
+    .wizard-steps {display:flex;flex-wrap:wrap;gap:6px;margin:12px 0 20px}
+    .wizard-tab {font:inherit;font-size:13px;color:#a7b3ca;border:1px solid #344155;background:#182238;border-radius:20px;padding:5px 11px;cursor:pointer}
+    .wizard-tab.active {background:#1d4ed8;color:white;border-color:#60a5fa}
+    .wizard-tab.done {color:#93c5fd}
+    .wizard-controls {display:flex;justify-content:space-between;gap:10px;margin-top:20px}
+    .wizard-controls .btn:disabled {opacity:.4;cursor:default}
+    .wizard-inner-card {margin-top:18px;padding:15px;border:1px solid #344155;border-radius:12px}
+    .fold-panel {background:var(--panel);border:1px solid var(--border);border-radius:14px;margin:14px 0;scroll-margin-top:90px}
+    .fold-panel > summary {cursor:pointer;font-size:19px;font-weight:700;padding:16px 20px;list-style-position:inside}
+    .fold-panel > .fold-body {padding:0 20px 20px}
+    .fold-panel .card {margin-top:12px}
+    @media (max-width:650px){.wizard-tab{padding:4px 8px;font-size:12px}.wizard-controls .btn{padding:10px 14px}}
+
 
     .grid {
       display: grid;
@@ -237,87 +255,48 @@
 
 <main>
   <section class="hero">
-    <span class="eyebrow">Windows 10 / 11 ＋ Google Chrome</span>
-    <p class="platform-notice">
-      ✅ Windows：目前支援<br>
-      ⏳ macOS（Mac 電腦）：尚未支援，規劃中
-    </p>
-    <h1>MediaSaver 安裝與更新中心</h1>
-    <p>
-      集中管理 MediaSaver 的安裝教學、版本資訊、
-      更新內容與常見問題，讓安裝與維護更加簡單。
-    </p>
-    <div class="actions">
-      <a class="btn primary" href="#install">開始安裝</a>
-      <a class="btn" href="#version">檢查版本</a>
-    </div>
+    <h1>MediaSaver 安裝中心</h1>
+    <p style="margin:6px auto 12px">Windows 10／11・Chrome｜Windows Beta 2.1</p>
+    <div class="actions"><a class="btn primary" href="#install">開始安裝</a><a class="btn" href="#version" data-open-panel="version">檢查安裝狀態</a></div>
   </section>
 
   <section id="install" class="section">
-    <h2>首次安裝</h2>
-    <p class="notice">新版安裝包可雙擊 <strong>開始安裝.cmd</strong> 完成本機授權，不需右鍵選擇 PowerShell；Chrome 擴充功能仍須手動載入。如 Apex One 阻擋，請先檢查警告內容，不要關閉防護。</p>
-    <p>請依照下列步驟安裝 Windows Beta 2.1。</p>
-    <div class="grid">
-      <div class="card">
-        <div class="num">01</div>
-        <h3>下載安裝包</h3>
-        <p>下載 MediaSaver 所需檔案，解壓縮到固定資料夾。</p>
-      </div>
-      <div class="card">
-        <div class="num">02</div>
-        <h3>安裝 Chrome 擴充功能</h3>
-        <p>開啟擴充功能管理頁，依照圖文教學載入未封裝項目。</p>
-      </div>
-      <div class="card">
-        <div class="num">03</div>
-        <h3>安裝本機程式</h3>
-        <p>執行下載包內的本機安裝器，完成必要的 Windows 設定。</p>
-      </div>
-      <div class="card">
-        <div class="num">04</div>
-        <h3>測試連線</h3>
-        <p>確認 Chrome 與 MediaSaver 本機程式能正常通訊。</p>
-      </div>
-    </div>
-
-    <div class="card" id="guidedInstall" style="margin:18px 0;border-color:#36587b">
-      <h3>Windows Beta 2.1 安裝引導</h3>
-      <p>依序完成下列步驟。網頁不會在背景執行安裝指令，也不會上傳你的檔案。</p>
-      <div class="actions" style="justify-content:flex-start;margin:14px 0">
+    <h2>首次安裝 <span style="font-size:14px;font-weight:400;color:#a7b3ca">一次只做一個步驟</span></h2>
+    <div class="card" id="guidedInstall" style="border-color:#36587b">
+      <p id="guideCounter" style="color:#93c5fd;font-weight:700" role="status">步驟 1 / 6</p>
+      <div class="wizard-progress" aria-label="安裝進度"><div id="guideBar"></div></div>
+      <div id="guideTabs" class="wizard-steps" aria-label="切換安裝步驟"></div>
+      <div id="guideStepContent" aria-live="polite"></div>
+      <div class="wizard-controls">
         <button id="guidePrevious" type="button" class="btn" disabled>上一步</button>
         <button id="guideNext" type="button" class="btn primary">下一步</button>
       </div>
-      <p id="guideCounter" style="color:#93c5fd;font-weight:700" role="status">步驟 1 / 6</p>
-      <div id="guideStepContent" style="margin-top:12px"></div>
     </div>
+    <p style="font-size:13px;color:#a7b3ca;margin:12px 0">安裝程式不會由網站自動執行。若安全軟體警告，請先確認來源與警告內容，不需關閉防護。</p>
+  </section>
 
-    <div class="card" style="margin-top:18px" id="releaseDownload">
-      <h3>下載 MediaSaver Windows 測試版</h3>
+  <!-- 功能區塊會由引導程式移至對應步驟，不會在其他步驟顯示 -->
+  <div id="wizardModules" hidden>
+    <div class="wizard-inner-card" id="releaseDownload">
+      <h3>Windows 安裝包</h3>
       <p id="releaseDownloadStatus">正在查詢 GitHub 發布資訊…</p>
       <a id="releaseDownloadLink" class="btn primary" style="display:none;margin-top:14px" target="_blank" rel="noopener noreferrer">下載 Windows ZIP 安裝包</a>
       <p id="releaseChecksum" style="font-size:12px;overflow-wrap:anywhere;margin-top:10px"></p>
-      <p style="font-size:13px;color:#a7b3ca;margin-top:10px">下載後解壓縮到固定資料夾，再載入擴充功能，雙擊「開始安裝.cmd」。請勿直接在 ZIP 裡執行安裝，亦不要關閉防毒保護。</p>
-      <a href="https://github.com/scoutdelsf/mediasaver-site/releases" target="_blank" rel="noopener noreferrer">查看官方發布紀錄</a>
+      <p style="font-size:13px;margin-top:10px">請從官方 GitHub Release 下載，並先解壓縮，不要直接在 ZIP 裡執行。</p>
     </div>
-
-    <div class="card" style="margin-top:18px" id="folderCheck">
-      <h3>檢查安裝資料夾（Windows / Chrome）</h3>
-      <p>先將安裝包解壓縮，再選擇解壓後的 MediaSaver 資料夾。網站只會檢查檔名是否存在；不會上傳檔案，也不會執行安裝。</p>
-      <button id="chooseFolderButton" class="btn" type="button" style="margin-top:14px">選擇 MediaSaver 資料夾並檢查</button>
+    <div class="wizard-inner-card" id="folderCheck">
+      <h3>檢查解壓縮資料夾</h3>
+      <p>選擇外層安裝資料夾，檢查必要檔名，不會上傳檔案。</p>
+      <button id="chooseFolderButton" class="btn" type="button" style="margin-top:14px">選擇資料夾並檢查</button>
       <p id="folderCheckStatus" style="margin-top:12px" role="status">尚未選擇資料夾。</p>
-      <p style="font-size:13px;color:#a7b3ca">新版固定 ID 安裝包：請選外層「MediaSaver 新朋友安裝包」。網站會自動偵測內層擴充功能資料夾，資料夾名稱不必固定。</p>
       <div id="folderCheckResults" style="margin-top:10px"></div>
-      <p style="font-size:12px;margin-top:12px">支援兩種結構：擴充功能四個檔案放在根目錄，或集中放在同一個子資料夾（不限子資料夾名稱）；四個 EXE 保持在根目錄。安裝後本機執行檔會複製到使用者自己的 AppData；Chrome 未封裝擴充功能資料夾仍不可任意搬移，否則需要重新載入擴充功能。此檢查無法證明 EXE 安全或已正確安裝。</p>
+      <p style="font-size:12px;margin-top:10px">僅檢查檔名，無法證明程式安全或已完成安裝。</p>
     </div>
+  </div>
 
-    <p class="notice">
-      本次為 Windows Beta 2.1 預先發布版，安裝前請檢查 GitHub Release 來源與安全軟體警告。
-      請勿下載其他來源宣稱為 MediaSaver 的安裝檔。
-      不需要關閉防毒軟體或防火牆。
-    </p>
-  </section>
-
-  <section id="version" class="section">
+  <details id="version" class="fold-panel">
+    <summary>安裝狀態與版本檢查（需要時展開）</summary>
+    <div class="fold-body">
     <h2>版本檢查</h2>
     <div class="grid">
       <div class="card">
@@ -347,10 +326,12 @@
       <p style="font-size:12px;margin-top:12px">透過既有 PING 檢查，不會開始下載。此處尚未檢測 FFmpeg 的實際版本號。</p>
     </div>
     <p id="versionError" style="color:#fca5a5"></p>
-  </section>
+    </div>
+  </details>
 
-
-  <section id="history" class="section">
+  <details id="history" class="fold-panel">
+    <summary>更新紀錄</summary>
+    <div class="fold-body">
     <h2>更新紀錄</h2>
   
     <div class="card">
@@ -364,10 +345,12 @@
     <p style="color:#a7b3ca">
       更新資料由 version.json 統一管理。
     </p>
-  </section>
+    </div>
+  </details>
 
-
-  <section id="help" class="section">
+  <details id="help" class="fold-panel">
+    <summary>疑難排解</summary>
+    <div class="fold-body">
     <h2>疑難排解</h2>
     <div class="grid">
       <div class="card">
@@ -387,7 +370,8 @@
         <p>未來提供版本比對、更新內容與安裝指引。</p>
       </div>
     </div>
-  </section>
+    </div>
+  </details>
 </main>
 
 <footer>
@@ -399,7 +383,7 @@
 
 <script>
   "use strict";
-  const FALLBACK_SITE_VERSION = "0.2.6";
+  const FALLBACK_SITE_VERSION = "0.2.7";
   const MS_CHANNEL = "MEDIASAVER_INSTALL_CENTER_V1";
   let extensionCheckId = "";
   let extensionCheckTimer = null;
@@ -721,7 +705,7 @@
     },
     {
       title: "解壓縮到固定資料夾",
-      body: "在 Windows 檔案總管對 ZIP 選擇「全部解壓縮」。建議放在不會經常變動的位置，例如文件資料夾內的 MediaSaver。安裝後請不要移動或重新命名，以免 Chrome 與 Native Messaging 找不到程式。",
+      body: "在 Windows 檔案總管對 ZIP 選擇「全部解壓縮」。建議放在不會經常變動的位置，例如文件資料夾內的 MediaSaver。請保留擴充功能資料夾在固定位置，因為 Chrome 是從該資料夾載入；本機程式會由安裝器複製到使用者 AppData。",
       action: "none"
     },
     {
@@ -746,45 +730,66 @@
     }
   ];
   let guideStep = 0;
+  const wizardContent = document.getElementById("guideStepContent");
+  const releaseModule = document.getElementById("releaseDownload");
+  const folderModule = document.getElementById("folderCheck");
+  const moduleParking = document.getElementById("wizardModules");
+  function openPanel(id) {
+    const panel = document.getElementById(id);
+    if (panel?.tagName === "DETAILS") panel.open = true;
+    panel?.scrollIntoView({behavior:"smooth",block:"start"});
+  }
+  document.querySelectorAll('[data-open-panel]').forEach(a => {
+    a.addEventListener('click', () => openPanel(a.dataset.openPanel));
+  });
+  document.querySelectorAll('nav a[href^="#"]').forEach(a => {
+    a.addEventListener('click', () => {
+      const id = a.getAttribute('href').slice(1);
+      if (document.getElementById(id)?.tagName === 'DETAILS') openPanel(id);
+    });
+  });
   function renderGuide() {
     const guide = steps[guideStep];
     document.getElementById("guideCounter").textContent =
-      "步驟 " + (guideStep + 1) + " / " + steps.length;
-    const area = document.getElementById("guideStepContent");
-    area.replaceChildren();
+      "目前步驟 " + (guideStep + 1) + " / " + steps.length;
+    document.getElementById("guideBar").style.width = (100*(guideStep+1)/steps.length) + "%";
+    // Move existing DOM nodes instead of cloning, preserving download state and listeners.
+    moduleParking.append(releaseModule, folderModule);
+    wizardContent.replaceChildren();
     const heading = document.createElement("h3");
     heading.textContent = guide.title;
     const p = document.createElement("p");
     p.textContent = guide.body;
-    area.append(heading, p);
-    const row = document.createElement("div");
-    row.style.marginTop = "14px";
-    const btn = document.createElement("button");
-    btn.type = "button";
-    btn.className = "btn";
-    if (guide.action === "download") {
-      btn.textContent = "前往官方下載區";
-      btn.onclick = () => document.getElementById("releaseDownload").scrollIntoView({behavior:"smooth"});
-    } else if (guide.action === "folder") {
-      btn.textContent = "選擇資料夾並檢查";
-      btn.onclick = () => document.getElementById("chooseFolderButton").click();
-    } else if (guide.action === "chrome") {
-      btn.textContent = "複製 Chrome 擴充功能設定網址";
-      btn.onclick = async () => {
-        try { await navigator.clipboard.writeText("chrome://extensions/"); btn.textContent = "已複製，請貼到 Chrome 網址列"; }
-        catch { btn.textContent = "請手動輸入 chrome://extensions/"; }
-      };
-    } else if (guide.action === "verify") {
-      btn.textContent = "前往版本檢查";
-      btn.onclick = () => document.getElementById("version").scrollIntoView({behavior:"smooth"});
+    wizardContent.append(heading,p);
+    if (guide.action === "download") wizardContent.appendChild(releaseModule);
+    if (guide.action === "folder") wizardContent.appendChild(folderModule);
+    if (guide.action === "chrome") {
+      const btn = document.createElement('button');
+      btn.className='btn';btn.type='button';btn.textContent='複製 chrome://extensions/';
+      btn.style.marginTop='14px';
+      btn.onclick=async()=>{try{await navigator.clipboard.writeText('chrome://extensions/');btn.textContent='已複製，貼到 Chrome 網址列';}
+        catch{btn.textContent='請在 Chrome 網址列輸入 chrome://extensions/';}};
+      wizardContent.appendChild(btn);
     }
-    if (guide.action !== "none") { row.appendChild(btn); area.appendChild(row); }
-    document.getElementById("guidePrevious").disabled = guideStep === 0;
-    const next = document.getElementById("guideNext");
-    next.textContent = guideStep === steps.length - 1 ? "回到第一步" : "下一步";
+    if (guide.action === "verify") {
+      const btn = document.createElement('button');
+      btn.className='btn';btn.type='button';btn.textContent='展開安裝狀態檢查';
+      btn.style.marginTop='14px';btn.onclick=()=>openPanel('version');
+      wizardContent.appendChild(btn);
+    }
+    const tabs = document.getElementById('guideTabs');tabs.replaceChildren();
+    steps.forEach((step,i)=>{
+      const tab=document.createElement('button');tab.type='button';
+      tab.className='wizard-tab'+(i===guideStep?' active':i<guideStep?' done':'');
+      tab.textContent=(i+1)+'. '+step.title.replace('下載官方 Windows Beta 安裝包','下載').replace('解壓縮到固定資料夾','解壓縮').replace('檢查資料夾內必要檔案','檢查檔案').replace('將 MediaSaver 載入 Chrome','Chrome').replace('雙擊開始安裝.cmd','安裝程式').replace('測試本機連線與下載','測試');
+      tab.setAttribute('aria-current',i===guideStep?'step':'false');
+      tab.onclick=()=>{guideStep=i;renderGuide();};tabs.appendChild(tab);
+    });
+    document.getElementById("guidePrevious").disabled=guideStep===0;
+    document.getElementById("guideNext").textContent=guideStep===steps.length-1?'重新開始':'完成這一步 →';
   }
-  document.getElementById("guidePrevious").onclick = () => { guideStep = Math.max(0, guideStep - 1); renderGuide(); };
-  document.getElementById("guideNext").onclick = () => { guideStep = (guideStep + 1) % steps.length; renderGuide(); };
+  document.getElementById("guidePrevious").onclick=()=>{guideStep=Math.max(0,guideStep-1);renderGuide();};
+  document.getElementById("guideNext").onclick=()=>{guideStep=(guideStep+1)%steps.length;renderGuide();};
   renderGuide();
   loadVersionInfo();
   checkMediaSaverExtension();
