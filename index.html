@@ -144,6 +144,8 @@
     .wizard-tab {font:inherit;font-size:13px;color:#a7b3ca;border:1px solid #344155;background:#182238;border-radius:20px;padding:5px 11px;cursor:pointer}
     .wizard-tab.active {background:#1d4ed8;color:white;border-color:#60a5fa}
     .wizard-tab.done {color:#93c5fd}
+    [hidden] {display:none!important}
+    .mode-switch{display:flex;gap:10px;margin-bottom:14px;flex-wrap:wrap}
     .wizard-controls {display:flex;justify-content:space-between;gap:10px;margin-top:20px}
     .wizard-controls .btn:disabled {opacity:.4;cursor:default}
     .wizard-inner-card {margin-top:18px;padding:15px;border:1px solid #344155;border-radius:12px}
@@ -245,7 +247,7 @@
       <span id="siteVersion" class="version-tag"></span>
     </div>
     <nav aria-label="主要導覽">
-      <a href="#install">首次安裝</a>
+      <a href="#install">安裝／更新</a>
       <a href="#version">版本檢查</a>
       <a href="#history">更新紀錄</a>
       <a href="#help">疑難排解</a>
@@ -256,12 +258,25 @@
 <main>
   <section class="hero">
     <h1>MediaSaver 安裝中心</h1>
-    <p style="margin:6px auto 12px">Windows 10／11・Chrome｜Windows Beta 2.1</p>
+    <p style="margin:6px auto 12px">Windows 10／11・Chrome｜Windows Beta 3</p>
     <div class="actions"><a class="btn primary" href="#install">開始安裝</a><a class="btn" href="#version" data-open-panel="version">檢查安裝狀態</a></div>
   </section>
 
   <section id="install" class="section">
-    <h2>首次安裝 <span style="font-size:14px;font-weight:400;color:#a7b3ca">一次只做一個步驟</span></h2>
+    <h2>安裝與更新 <span style="font-size:14px;font-weight:400;color:#a7b3ca">依照需要選擇</span></h2>
+    <div class="mode-switch" role="tablist" aria-label="選擇安裝模式">
+      <button id="newMode" type="button" class="btn primary" role="tab" aria-selected="true">首次安裝</button>
+      <button id="updateMode" type="button" class="btn" role="tab" aria-selected="false">快速更新</button>
+    </div>
+    <div class="card" id="quickUpdate" hidden>
+      <h3>已經安裝 MediaSaver？</h3>
+      <p>只更新本機主程式，不重新下載 yt-dlp、FFmpeg 或 Chrome 擴充功能，也不改變既有擴充功能 ID。</p>
+      <div class="wizard-progress"><div id="updateBar" style="width:25%"></div></div>
+      <p id="updateCounter" style="color:#93c5fd;font-weight:700">步驟 1 / 4</p>
+      <div id="updateTabs" class="wizard-steps"></div>
+      <div id="updateStepContent" aria-live="polite"></div>
+      <div class="wizard-controls"><button id="updatePrevious" class="btn" type="button">上一步</button><button id="updateNext" class="btn primary" type="button">下一步 →</button></div>
+    </div>
     <div class="card" id="guidedInstall" style="border-color:#36587b">
       <p id="guideCounter" style="color:#93c5fd;font-weight:700" role="status">步驟 1 / 6</p>
       <div class="wizard-progress" aria-label="安裝進度"><div id="guideBar"></div></div>
@@ -283,6 +298,12 @@
       <a id="releaseDownloadLink" class="btn primary" style="display:none;margin-top:14px" target="_blank" rel="noopener noreferrer">下載 Windows ZIP 安裝包</a>
       <p id="releaseChecksum" style="font-size:12px;overflow-wrap:anywhere;margin-top:10px"></p>
       <p style="font-size:13px;margin-top:10px">請從官方 GitHub Release 下載，並先解壓縮，不要直接在 ZIP 裡執行。</p>
+    </div>
+    <div class="wizard-inner-card" id="quickDownload">
+      <h3>快速更新 ZIP</h3>
+      <p id="quickDownloadStatus">正在確認 Beta 3 更新附件…</p>
+      <a id="quickDownloadLink" class="btn primary" style="display:none;margin-top:12px" target="_blank" rel="noopener noreferrer">下載快速更新 ZIP</a>
+      <p id="quickFallback" style="font-size:13px;margin-top:12px">若無法讀取附件，請從 <a href="https://github.com/scoutdelsf/mediasaver-site/releases/tag/windows-beta-3" target="_blank" rel="noopener noreferrer">GitHub Beta 3 發布頁</a>選擇 QuickUpdate ZIP。</p>
     </div>
     <div class="wizard-inner-card" id="folderCheck">
       <h3>檢查解壓縮資料夾</h3>
@@ -383,7 +404,7 @@
 
 <script>
   "use strict";
-  const FALLBACK_SITE_VERSION = "0.2.7";
+  const FALLBACK_SITE_VERSION = "0.2.8";
   const MS_CHANNEL = "MEDIASAVER_INSTALL_CENTER_V1";
   let extensionCheckId = "";
   let extensionCheckTimer = null;
@@ -495,7 +516,7 @@
       }
       const released = !!app.latestVersion && app.status !== "not_published";
       setText("applicationLatestVersion", released ? "v" + app.latestVersion : "尚未正式發布");
-      setText("applicationVersionStatus", released ? (app.status === "beta" ? "Windows Beta 2.1（預先發布版）" : "最新正式發布版本") : "目前仍在測試階段");
+      setText("applicationVersionStatus", released ? (app.status === "beta" ? "Windows Beta 3（預先發布版）" : "最新正式發布版本") : "目前仍在測試階段");
       setText("releaseDate", "發布日期：" + (app.releaseDate || "尚未發布"));
       const changelog = document.getElementById("changelog");
       changelog.replaceChildren();
@@ -510,6 +531,7 @@
       } else {
         changelog.textContent = "目前尚無正式版本更新紀錄。";
       }
+      await findBeta3Assets();
       setText("versionError", "");
     } catch (error) {
       remoteVersionLoaded = false;
@@ -519,7 +541,50 @@
       setText("applicationVersionStatus", "請稍後再試");
       setText("releaseDownloadStatus", "無法讀取發布資訊，下載暫不可用。");
       document.getElementById("releaseDownloadLink").style.display = "none";
+      await findBeta3Assets();
       setText("versionError", "無法讀取 version.json：" + error.message);
+    }
+  }
+
+  // The release page is confirmed. Resolve actual asset URLs from GitHub API,
+  // never infer an asset filename from a timestamp or previous Beta.
+  async function findBeta3Assets() {
+    const releasePage = "https://github.com/scoutdelsf/mediasaver-site/releases/tag/windows-beta-3";
+    const mainButton = document.getElementById("releaseDownloadLink");
+    const quickButton = document.getElementById("quickDownloadLink");
+    const quickStatus = document.getElementById("quickDownloadStatus");
+    const fullStatus = document.getElementById("releaseDownloadStatus");
+    mainButton.href = releasePage;
+    mainButton.style.display = "inline-block";
+    mainButton.textContent = "查看 Beta 3 完整安裝包";
+    quickButton.href = releasePage;
+    quickButton.style.display = "inline-block";
+    quickButton.textContent = "查看 Beta 3 快速更新包";
+    fullStatus.textContent = "Beta 3 已發布。正在查詢實際 ZIP 附件名稱…";
+    quickStatus.textContent = "Beta 3 快速更新包已發布，正在確認 ZIP 附件…";
+    try {
+      const resp = await fetch("https://api.github.com/repos/scoutdelsf/mediasaver-site/releases/tags/windows-beta-3", {headers:{Accept:"application/vnd.github+json"}});
+      if (!resp.ok) throw Error("GitHub API HTTP " + resp.status);
+      const release = await resp.json();
+      const assets = Array.isArray(release.assets) ? release.assets : [];
+      const valid = a => typeof a?.name === "string" && /\.zip$/i.test(a.name) &&
+        typeof a.browser_download_url === "string" &&
+        a.browser_download_url.startsWith("https://github.com/scoutdelsf/mediasaver-site/releases/download/windows-beta-3/");
+      const full = assets.find(a => valid(a) && /^MediaSaver-Windows-Beta-/i.test(a.name));
+      const quick = assets.find(a => valid(a) && /QuickUpdate/i.test(a.name));
+      if (full) {
+        mainButton.href = full.browser_download_url;
+        mainButton.textContent = "下載完整安裝包";
+        fullStatus.textContent = full.name;
+      } else fullStatus.textContent = "尚未辨識完整安裝 ZIP，請到 GitHub Release 頁確認。";
+      if (quick) {
+        quickButton.href = quick.browser_download_url;
+        quickButton.textContent = "下載快速更新包";
+        quickStatus.textContent = quick.name;
+      } else quickStatus.textContent = "尚未辨識快速更新 ZIP，請到 GitHub Release 頁確認。";
+    } catch (error) {
+      fullStatus.textContent = "附件資訊目前無法自動讀取，請在 GitHub Beta 3 頁面選擇完整安裝包。";
+      quickStatus.textContent = "附件資訊目前無法自動讀取，請在 GitHub Beta 3 頁面選擇 QuickUpdate ZIP。";
     }
   }
 
@@ -791,6 +856,50 @@
   document.getElementById("guidePrevious").onclick=()=>{guideStep=Math.max(0,guideStep-1);renderGuide();};
   document.getElementById("guideNext").onclick=()=>{guideStep=(guideStep+1)%steps.length;renderGuide();};
   renderGuide();
+  const updateSteps = [
+    {title:"下載快速更新包",body:"下載 Beta 3 的 QuickUpdate ZIP。僅含新版 MediaSaverHost 與更新指令碼，不需重新下載 yt-dlp、FFmpeg。",action:"download"},
+    {title:"解壓縮並關閉 Chrome",body:"將 ZIP 完整解壓縮到任意資料夾。關閉 Chrome，確認沒有正在進行的 MediaSaver 下載。",action:"none"},
+    {title:"執行快速更新",body:"雙擊解壓縮資料夾中的「快速更新MediaSaver.cmd」，等待 UPDATE SUCCESS。無需重新執行「開始安裝.cmd」，也不需變更擴充功能 ID。",action:"none"},
+    {title:"重新開啟並測試",body:"重新開啟 Chrome，測試影片解析、MP4／MP3／JPEG 下載及開啟 Downloads\\MediaSaver。若需診斷，展開下方版本檢查。",action:"verify"}
+  ];
+  let updateStep = 0;
+  const updateArea = document.getElementById("updateStepContent");
+  const quickModule = document.getElementById("quickDownload");
+  function renderUpdate() {
+    const x = updateSteps[updateStep];
+    moduleParking.appendChild(quickModule);
+    updateArea.replaceChildren();
+    const h = document.createElement('h3');h.textContent = x.title;
+    const p = document.createElement('p');p.textContent = x.body;
+    updateArea.append(h,p);
+    if(x.action === 'download')updateArea.appendChild(quickModule);
+    if(x.action === 'verify') {
+      const b=document.createElement('button');b.className='btn';b.textContent='展開版本檢查';
+      b.onclick=()=>openPanel('version'); updateArea.appendChild(b);
+    }
+    document.getElementById('updateCounter').textContent='步驟 '+(updateStep+1)+' / '+updateSteps.length;
+    document.getElementById('updateBar').style.width=(100*(updateStep+1)/updateSteps.length)+'%';
+    const tabs=document.getElementById('updateTabs');tabs.replaceChildren();
+    updateSteps.forEach((x,i)=>{
+      const b=document.createElement('button');b.type='button';b.className='wizard-tab'+(i===updateStep?' active':'');
+      b.textContent=(i+1)+'. '+x.title;b.onclick=()=>{updateStep=i;renderUpdate()};tabs.appendChild(b);
+    });
+    document.getElementById('updatePrevious').disabled=updateStep===0;
+    document.getElementById('updateNext').textContent=updateStep===3?'重新開始':'完成這一步 →';
+  }
+  document.getElementById('updatePrevious').onclick=()=>{updateStep=Math.max(0,updateStep-1);renderUpdate()};
+  document.getElementById('updateNext').onclick=()=>{updateStep=(updateStep+1)%4;renderUpdate()};
+  function setMode(mode) {
+    const install = mode==='new';
+    document.getElementById('guidedInstall').hidden=!install;
+    document.getElementById('quickUpdate').hidden=install;
+    for(const [id,active] of [['newMode',install],['updateMode',!install]]) {
+      const b=document.getElementById(id);b.classList.toggle('primary',active);b.setAttribute('aria-selected',String(active));
+    }
+    if(!install)renderUpdate();
+  }
+  document.getElementById('newMode').onclick=()=>setMode('new');
+  document.getElementById('updateMode').onclick=()=>setMode('update');
   loadVersionInfo();
   checkMediaSaverExtension();
 </script>
