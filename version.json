@@ -1,51 +1,25 @@
 {
-  "schemaVersion": 1,
   "website": {
-    "version": "0.2.7",
-    "status": "development"
+    "version": "0.2.8",
+    "status": "beta"
   },
   "application": {
-    "name": "MediaSaver",
-    "latestVersion": "1.0.0-beta.2.1",
-    "releaseDate": "2026-10-19",
+    "latestVersion": "1.0.0-beta.3",
     "status": "beta",
-    "downloadUrl": "https://github.com/scoutdelsf/mediasaver-site/releases/download/windows-beta-2.1/MediaSaver-Windows-Beta-20261019-202358.zip",
+    "releaseDate": "2026-10-20",
+    "releasePage": "https://github.com/scoutdelsf/mediasaver-site/releases/tag/windows-beta-3",
+    "downloadUrl": "",
+    "sha256": "",
     "changelog": [
-      "Windows Beta 2.1：修正首次安裝器寫入 Chrome Native Messaging 登錄機碼時發生的錯誤",
-      "安裝程式自動將本機工具部署至使用者自己的 AppData，並驗證登錄資訊",
-      "保留既有 Chrome 擴充功能 ID 授權，新增固定 ID",
-      "包含 yt-dlp、FFmpeg 及 Threads 解析外掛",
-      "保留 MP4、MP3、JPG、取消下載、開啟資料夾等功能",
-      "保留網站首次安裝引導、資料夾完整性檢查與本機狀態診斷"
-    ],
-    "sha256": null
-  },
-  "platforms": {
-    "windows": {
-      "supported": true,
-      "status": "testing",
-      "minimumVersion": "10"
-    },
-    "macos": {
-      "supported": false,
-      "status": "planned"
-    }
+      "提供 Beta 3 完整安裝與快速更新雙入口",
+      "快速更新僅替換 MediaSaverHost，保留其他元件和既有 Chrome ID",
+      "Windows 資料夾開啟功能已修正，精準進入 Downloads\\MediaSaver"
+    ]
   },
   "components": {
     "chromeExtension": {
       "latestVersion": "1.4.4",
       "testBaselineVersion": "1.4.4"
-    },
-    "nativeHost": {
-      "latestVersion": null
-    },
-    "ytDlp": {
-      "version": null,
-      "updatePolicy": "separate"
-    },
-    "ffmpeg": {
-      "version": null,
-      "updatePolicy": "separate"
     }
   }
 }
