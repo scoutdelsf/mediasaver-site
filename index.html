@@ -1,252 +1,202 @@
-
 <!DOCTYPE html>
 <html lang="zh-Hant">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="color-scheme" content="dark">
-  <title>MediaSaver｜安裝與更新中心</title>
-  <style>
-    :root {
-      --bg: #0b1020;
-      --panel: #151d31;
-      --border: #29354c;
-      --text: #edf2ff;
-      --muted: #a7b3ca;
-      --blue: #60a5fa;
-      --green: #34d399;
-    }
-
-    * { box-sizing: border-box; }
-
-    html { scroll-behavior: smooth; }
-
-    body {
-      margin: 0;
-      background: var(--bg);
-      color: var(--text);
-      font-family: "Microsoft JhengHei", "Noto Sans TC",
-        system-ui, sans-serif;
-      line-height: 1.8;
-    }
-
-    a { color: var(--blue); }
-
-    header {
-      position: sticky;
-      top: 0;
-      z-index: 10;
-      background: #0b1020ee;
-      border-bottom: 1px solid var(--border);
-      backdrop-filter: blur(12px);
-    }
-
-    .nav {
-      max-width: 1080px;
-      margin: auto;
-      padding: 15px 24px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 15px;
-      flex-wrap: wrap;
-    }
-
-    .logo {
-      font-weight: 800;
-      font-size: 20px;
-      letter-spacing: .4px;
-    }
-
-    nav {
-      display: flex;
-      gap: 18px;
-      flex-wrap: wrap;
-    }
-
-    nav a {
-      color: var(--muted);
-      text-decoration: none;
-      font-size: 14px;
-    }
-
-    nav a:hover { color: white; }
-
-    main {
-      max-width: 1080px;
-      margin: auto;
-      padding: 35px 24px 75px;
-    }
-
-    .hero {
-      padding: 62px 0 55px;
-      text-align: center;
-    }
-
-    .eyebrow {
-      display: inline-block;
-      padding: 5px 13px;
-      border: 1px solid #285783;
-      border-radius: 100px;
-      color: #93c5fd;
-      font-size: 13px;
-      background: #15283e;
-    }
-
-    h1 {
-      margin: 20px 0 8px;
-      font-size: clamp(32px, 5vw, 52px);
-      line-height: 1.3;
-    }
-
-    h2 { font-size: 25px; }
-
-    .hero p {
-      max-width: 650px;
-      margin: 12px auto 24px;
-      color: var(--muted);
-    }
-
-    .actions {
-      display: flex;
-      justify-content: center;
-      flex-wrap: wrap;
-      gap: 12px;
-    }
-
-    .btn {
-      display: inline-block;
-      padding: 12px 22px;
-      border-radius: 10px;
-      border: 1px solid var(--border);
-      background: #222d43;
-      color: white;
-      text-decoration: none;
-      font-weight: 700;
-      cursor: pointer;
-      font: inherit;
-    }
-
-    .btn.primary {
-      background: #2563eb;
-      border-color: #2563eb;
-    }
-
-    .btn:hover { filter: brightness(1.15); }
-
-    .section { margin: 24px 0 36px; scroll-margin-top:85px; }
-    .hero { padding: 20px 0 22px; }
-    .hero h1 { font-size:clamp(26px,4vw,36px); margin:8px 0; }
-    .hero .platform-notice { margin:8px auto; padding:6px 12px; }
-    .wizard-progress {height:9px;background:#27344a;border-radius:9px;overflow:hidden;margin:12px 0 18px}
-    .wizard-progress > div {height:100%;width:16.66%;background:#60a5fa;transition:width .2s ease}
-    .wizard-steps {display:flex;flex-wrap:wrap;gap:6px;margin:12px 0 20px}
-    .wizard-tab {font:inherit;font-size:13px;color:#a7b3ca;border:1px solid #344155;background:#182238;border-radius:20px;padding:5px 11px;cursor:pointer}
-    .wizard-tab.active {background:#1d4ed8;color:white;border-color:#60a5fa}
-    .wizard-tab.done {color:#93c5fd}
-    [hidden] {display:none!important}
-    .mode-switch{display:flex;gap:10px;margin-bottom:14px;flex-wrap:wrap}
-    .wizard-controls {display:flex;justify-content:space-between;gap:10px;margin-top:20px}
-    .wizard-controls .btn:disabled {opacity:.4;cursor:default}
-    .wizard-inner-card {margin-top:18px;padding:15px;border:1px solid #344155;border-radius:12px}
-    .fold-panel {background:var(--panel);border:1px solid var(--border);border-radius:14px;margin:14px 0;scroll-margin-top:90px}
-    .fold-panel > summary {cursor:pointer;font-size:19px;font-weight:700;padding:16px 20px;list-style-position:inside}
-    .fold-panel > .fold-body {padding:0 20px 20px}
-    .fold-panel .card {margin-top:12px}
-    @media (max-width:650px){.wizard-tab{padding:4px 8px;font-size:12px}.wizard-controls .btn{padding:10px 14px}}
-
-
-    .grid {
-      display: grid;
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-      gap: 16px;
-    }
-
-    .card {
-      padding: 24px;
-      border-radius: 16px;
-      background: var(--panel);
-      border: 1px solid var(--border);
-    }
-
-    .card h3 { margin: 0 0 8px; }
-
-    .card p {
-      margin: 0;
-      color: var(--muted);
-    }
-
-    .num {
-      color: var(--blue);
-      font-size: 25px;
-      font-weight: 800;
-      margin-bottom: 8px;
-    }
-
-    .status {
-      display: inline-block;
-      padding: 5px 12px;
-      border-radius: 7px;
-      background: #283449;
-      color: #d0ddf5;
-      font-size: 13px;
-    }
-
-    .notice {
-      border-left: 3px solid var(--blue);
-      padding: 14px 18px;
-      background: #15243b;
-      border-radius: 8px;
-      color: var(--muted);
-    }
-
-    .version-tag {
-      display: inline-block;
-      margin-left: 8px;
-      padding: 2px 9px;
-      border-radius: 7px;
-      background: #243b60;
-      color: #93c5fd;
-      font-size: 12px;
-      font-weight: 600;
-      vertical-align: middle;
-    }
-
-    .platform-notice {
-      max-width: 480px;
-      margin: 18px auto;
-      padding: 12px 20px;
-      border: 1px solid #29354c;
-      border-radius: 10px;
-      background: #151d31;
-      color: #cbd5e1;
-      font-size: 14px;
-      line-height: 2;
-    }
-    
-    footer {
-      text-align: center;
-      padding: 30px;
-      color: var(--muted);
-      border-top: 1px solid var(--border);
-      font-size: 13px;
-    }
-
-    @media (max-width: 650px) {
-      .grid { grid-template-columns: 1fr; }
-      .hero { padding-top: 35px; }
-      .card { padding: 19px; }
-    }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="dark">
+<meta name="description" content="MediaSaver 安裝與使用中心：選擇 Windows、Android 或 iPhone，查看下載與操作方式。">
+<title>MediaSaver｜安裝與使用中心</title>
+<style>
+:root{
+  --bg:#0b1020;--panel:#151d31;--border:#29354c;
+  --text:#edf2ff;--muted:#a7b3ca;--blue:#60a5fa;--green:#34d399
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  margin:0;background:var(--bg);color:var(--text);
+  font-family:"Microsoft JhengHei","Noto Sans TC",system-ui,sans-serif;
+  line-height:1.8
+}
+a{color:var(--blue)}
+button,input{font:inherit}
+button:disabled{opacity:.45;cursor:default}
+[hidden]{display:none!important}
+header{
+  position:sticky;top:0;z-index:10;
+  background:#0b1020ee;border-bottom:1px solid var(--border);
+  backdrop-filter:blur(12px)
+}
+.nav{
+  max-width:1080px;margin:auto;padding:15px 24px;
+  display:flex;align-items:center;justify-content:space-between;
+  gap:15px;flex-wrap:wrap
+}
+.logo{font-weight:800;font-size:20px;letter-spacing:.4px}
+.home-link{color:var(--text);text-decoration:none}
+.top-home{color:var(--muted);text-decoration:none}
+nav{display:flex;gap:18px;flex-wrap:wrap}
+nav a{color:var(--muted);text-decoration:none;font-size:14px}
+nav a:hover,.top-home:hover{color:white}
+main{max-width:1080px;margin:auto;padding:35px 24px 75px}
+h1{font-size:clamp(28px,5vw,44px);line-height:1.35}
+h2{font-size:25px}
+h3{font-size:19px}
+p{overflow-wrap:anywhere}
+.eyebrow{
+  display:inline-block;padding:5px 13px;border:1px solid #285783;
+  border-radius:100px;color:#93c5fd;font-size:13px;background:#15283e
+}
+.home-hero{padding:40px 0 26px;text-align:center}
+.home-hero h1{margin:14px 0;font-size:clamp(30px,5vw,48px)}
+.home-hero p{max-width:660px;margin:12px auto;color:var(--muted)}
+.platform-grid{
+  display:grid;grid-template-columns:repeat(3,minmax(0,1fr));
+  gap:18px;margin:24px 0
+}
+.platform-choice{
+  display:flex;flex-direction:column;gap:10px;padding:26px;
+  text-decoration:none;color:var(--text);background:var(--panel);
+  border:1px solid var(--border);border-radius:16px;
+  transition:transform .15s,border-color .15s
+}
+.platform-choice:hover{transform:translateY(-3px);border-color:var(--blue)}
+.platform-choice strong{font-size:25px}
+.platform-choice small{color:var(--muted);font-size:14px}
+.platform-choice .entry-link{margin-top:auto;color:var(--blue)}
+.platform-icon{
+  width:48px;height:48px;border-radius:13px;
+  display:grid;place-items:center;
+  background:#21324f;color:#bfdbfe;font-size:26px
+}
+.hero{padding:20px 0 22px;text-align:center}
+.hero h1{font-size:clamp(26px,4vw,36px);margin:8px 0}
+.hero p{max-width:650px;margin:8px auto 14px;color:var(--muted)}
+.actions{display:flex;justify-content:center;flex-wrap:wrap;gap:12px}
+.btn{
+  display:inline-block;padding:12px 22px;border-radius:10px;
+  border:1px solid var(--border);background:#222d43;color:white;
+  text-decoration:none;cursor:pointer;font:inherit;
+  text-align:center;max-width:100%;overflow-wrap:anywhere
+}
+.btn.primary{background:#2563eb;border-color:#2563eb}
+.btn:hover{filter:brightness(1.15)}
+.section{margin:24px 0 36px;scroll-margin-top:100px}
+.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}
+.card{
+  padding:24px;border-radius:16px;
+  background:var(--panel);border:1px solid var(--border)
+}
+.card h3{margin:0 0 8px}
+.card p{margin:0;color:var(--muted)}
+.card h2:first-child{margin-top:0}
+.muted{color:var(--muted)}
+.status{
+  display:inline-block;padding:5px 12px;border-radius:7px;
+  background:#283449;color:#d0ddf5;font-size:13px
+}
+.notice{
+  border-left:3px solid var(--blue);padding:14px 18px;
+  background:#15243b;border-radius:8px;color:var(--muted)
+}
+.version-tag{
+  display:inline-block;margin-left:8px;padding:2px 9px;
+  border-radius:7px;background:#243b60;color:#93c5fd;
+  font-size:12px;font-weight:600;vertical-align:middle
+}
+.wizard-progress{
+  height:9px;background:#27344a;border-radius:9px;
+  overflow:hidden;margin:12px 0 18px
+}
+.wizard-progress>div{
+  height:100%;width:16.66%;background:#60a5fa;
+  transition:width .2s ease
+}
+.wizard-steps{display:flex;flex-wrap:wrap;gap:6px;margin:12px 0 20px}
+.wizard-tab{
+  font:inherit;font-size:13px;color:#a7b3ca;
+  border:1px solid #344155;background:#182238;
+  border-radius:20px;padding:5px 11px;cursor:pointer
+}
+.wizard-tab.active{background:#1d4ed8;color:white;border-color:#60a5fa}
+.wizard-tab.done{color:#93c5fd}
+.mode-switch{display:flex;gap:10px;margin-bottom:14px;flex-wrap:wrap}
+.wizard-controls{
+  display:flex;justify-content:space-between;gap:10px;margin-top:20px
+}
+.wizard-inner-card{
+  margin-top:18px;padding:15px;border:1px solid #344155;border-radius:12px
+}
+.fold-panel{
+  background:var(--panel);border:1px solid var(--border);
+  border-radius:14px;margin:14px 0;scroll-margin-top:100px
+}
+.fold-panel>summary{
+  cursor:pointer;font-size:19px;font-weight:700;
+  padding:16px 20px;list-style-position:inside
+}
+.fold-body{padding:0 20px 20px}
+.fold-panel .card{margin-top:12px}
+.mobile-heading{margin:18px 0 28px}
+.mobile-heading h1{font-size:clamp(28px,4vw,38px);margin:12px 0}
+.mobile-heading p{color:var(--muted)}
+.mobile-steps{counter-reset:mobile}
+.mobile-step{
+  position:relative;padding:22px 24px 22px 72px;margin:14px 0;
+  background:var(--panel);border:1px solid var(--border);border-radius:14px
+}
+.mobile-step:before{
+  counter-increment:mobile;content:counter(mobile);
+  position:absolute;left:22px;top:21px;width:32px;height:32px;
+  border-radius:50%;display:grid;place-items:center;
+  background:#233e63;color:#bfdbfe;font-weight:700
+}
+.mobile-step h2{font-size:20px;margin:0 0 8px}
+.mobile-step p{margin:8px 0;color:var(--muted)}
+.mobile-step .btn{margin:8px 8px 8px 0}
+.download-actions{display:flex;gap:12px;flex-wrap:wrap;margin:20px 0}
+.copy-field{
+  width:100%;padding:12px;background:#0c1525;color:var(--text);
+  border:1px solid var(--border);border-radius:8px;
+  margin:8px 0;font-size:13px
+}
+footer{
+  text-align:center;padding:26px;color:var(--muted);
+  border-top:1px solid var(--border);font-size:13px
+}
+:focus-visible{outline:3px solid #93c5fd;outline-offset:4px}
+@media(max-width:760px){
+  .platform-grid{grid-template-columns:1fr}
+  .home-hero{padding-top:18px}
+  .platform-choice{padding:21px}
+  .nav{padding:12px 18px}
+  main{padding:20px 18px 50px}
+  .mobile-step{padding:20px 16px 20px 60px}
+  .mobile-step:before{left:15px;top:19px}
+  .download-actions .btn{width:100%}
+}
+@media(max-width:650px){
+  .grid{grid-template-columns:1fr}
+  .card{padding:19px}
+  .wizard-tab{padding:4px 8px;font-size:12px}
+  .wizard-controls .btn{padding:10px 14px}
+}
+@media(prefers-reduced-motion:reduce){
+  html{scroll-behavior:auto}
+  .platform-choice,.wizard-progress>div{transition:none}
+}
+</style>
 </head>
 <body>
 
 <header>
   <div class="nav">
-    <div class="logo">⬇ MediaSaver
+    <div class="logo">
+      <a class="home-link" href="#home">↓ MediaSaver</a>
       <span id="siteVersion" class="version-tag"></span>
     </div>
-    <nav aria-label="主要導覽">
+    <a class="top-home" href="#home">選擇系統</a>
+    <nav id="windowsNavigation" hidden aria-label="Windows 導覽">
       <a href="#install">安裝／更新</a>
       <a href="#version">版本檢查</a>
       <a href="#history">更新紀錄</a>
@@ -256,30 +206,99 @@
 </header>
 
 <main>
+
+<section id="homeView" aria-labelledby="homeHeading">
+  <div class="home-hero">
+    <span class="eyebrow">Media Saver · 個人影音下載工具</span>
+    <h1 id="homeHeading" tabindex="-1">把想留住的影片，存下來。</h1>
+    <p>
+      Media Saver 協助你下載影片與音訊。
+      請選擇目前使用的裝置，查看適合的安裝與操作方式。
+    </p>
+  </div>
+
+  <div class="platform-grid" aria-label="選擇目前使用的系統">
+    <a class="platform-choice" href="#windows">
+      <span class="platform-icon" aria-hidden="true">▦</span>
+      <strong>Windows 電腦</strong>
+      <small>
+        Windows 10／11 ＋ Chrome<br>
+        完整安裝、快速更新與環境檢查
+      </small>
+      <span class="entry-link">查看 Windows 安裝方式 →</span>
+    </a>
+
+    <a class="platform-choice" href="#android">
+      <span class="platform-icon" aria-hidden="true">↓</span>
+      <strong>Android 手機</strong>
+      <small>
+        Android 10 以上<br>
+        安裝 App，從影片分享選單下載
+      </small>
+      <span class="entry-link">下載 Android App →</span>
+    </a>
+
+    <a class="platform-choice" href="#iphone">
+      <span class="platform-icon" aria-hidden="true">⌘</span>
+      <strong>iPhone／iPad</strong>
+      <small>
+        免費 a-Shell mini ＋ SW-DLT 捷徑<br>
+        不需申請付費開發者帳號
+      </small>
+      <span class="entry-link">查看 iPhone 使用方式 →</span>
+    </a>
+  </div>
+</section>
+
+<div id="windowsView" hidden>
+
   <section class="hero">
-    <h1>MediaSaver 安裝中心</h1>
-    <p style="margin:6px auto 12px">Windows 10／11・Chrome｜Windows Beta 3</p>
-    <div class="actions"><a class="btn primary" href="#install">開始安裝</a><a class="btn" href="#version" data-open-panel="version">檢查安裝狀態</a></div>
+    <h1 tabindex="-1">Windows 安裝與更新</h1>
+    <p>Windows 10／11・Chrome｜Windows Beta 3</p>
+    <div class="actions">
+      <a class="btn primary" href="#install">開始安裝</a>
+      <a class="btn" href="#version" data-open-panel="version">檢查安裝狀態</a>
+    </div>
   </section>
 
   <section id="install" class="section">
-    <h2>安裝與更新 <span style="font-size:14px;font-weight:400;color:#a7b3ca">依照需要選擇</span></h2>
+    <h2>
+      安裝與更新
+      <span style="font-size:14px;font-weight:400;color:#a7b3ca">依照需要選擇</span>
+    </h2>
+
     <div class="mode-switch" role="tablist" aria-label="選擇安裝模式">
-      <button id="newMode" type="button" class="btn primary" role="tab" aria-selected="true">首次安裝</button>
-      <button id="updateMode" type="button" class="btn" role="tab" aria-selected="false">快速更新</button>
+      <button id="newMode" type="button" class="btn primary"
+        role="tab" aria-selected="true">首次安裝</button>
+      <button id="updateMode" type="button" class="btn"
+        role="tab" aria-selected="false">快速更新</button>
     </div>
+
     <div class="card" id="quickUpdate" hidden>
       <h3>已經安裝 MediaSaver？</h3>
-      <p>只更新本機主程式，不重新下載 yt-dlp、FFmpeg 或 Chrome 擴充功能，也不改變既有擴充功能 ID。</p>
-      <div class="wizard-progress"><div id="updateBar" style="width:25%"></div></div>
+      <p>
+        只更新本機主程式，不重新下載 yt-dlp、FFmpeg 或 Chrome 擴充功能，
+        也不改變既有擴充功能 ID。
+      </p>
+      <div class="wizard-progress">
+        <div id="updateBar" style="width:25%"></div>
+      </div>
       <p id="updateCounter" style="color:#93c5fd;font-weight:700">步驟 1 / 4</p>
       <div id="updateTabs" class="wizard-steps"></div>
       <div id="updateStepContent" aria-live="polite"></div>
-      <div class="wizard-controls"><button id="updatePrevious" class="btn" type="button">上一步</button><button id="updateNext" class="btn primary" type="button">下一步 →</button></div>
+      <div class="wizard-controls">
+        <button id="updatePrevious" class="btn" type="button">上一步</button>
+        <button id="updateNext" class="btn primary" type="button">下一步 →</button>
+      </div>
     </div>
+
     <div class="card" id="guidedInstall" style="border-color:#36587b">
-      <p id="guideCounter" style="color:#93c5fd;font-weight:700" role="status">步驟 1 / 6</p>
-      <div class="wizard-progress" aria-label="安裝進度"><div id="guideBar"></div></div>
+      <p id="guideCounter" style="color:#93c5fd;font-weight:700" role="status">
+        步驟 1 / 6
+      </p>
+      <div class="wizard-progress" aria-label="安裝進度">
+        <div id="guideBar"></div>
+      </div>
       <div id="guideTabs" class="wizard-steps" aria-label="切換安裝步驟"></div>
       <div id="guideStepContent" aria-live="polite"></div>
       <div class="wizard-controls">
@@ -287,621 +306,1331 @@
         <button id="guideNext" type="button" class="btn primary">下一步</button>
       </div>
     </div>
-    <p style="font-size:13px;color:#a7b3ca;margin:12px 0">安裝程式不會由網站自動執行。若安全軟體警告，請先確認來源與警告內容，不需關閉防護。</p>
+
+    <p class="muted" style="font-size:13px;margin:12px 0">
+      安裝程式不會由網站自動執行。若安全軟體警告，請先確認來源與警告內容，不需關閉防護。
+    </p>
   </section>
 
-  <!-- 功能區塊會由引導程式移至對應步驟，不會在其他步驟顯示 -->
   <div id="wizardModules" hidden>
     <div class="wizard-inner-card" id="releaseDownload">
       <h3>Windows 安裝包</h3>
-      <p id="releaseDownloadStatus">正在查詢 GitHub 發布資訊…</p>
-      <a id="releaseDownloadLink" class="btn primary" style="display:none;margin-top:14px" target="_blank" rel="noopener noreferrer">下載 Windows ZIP 安裝包</a>
-      <p id="releaseChecksum" style="font-size:12px;overflow-wrap:anywhere;margin-top:10px"></p>
-      <p style="font-size:13px;margin-top:10px">請從官方 GitHub Release 下載，並先解壓縮，不要直接在 ZIP 裡執行。</p>
+      <p id="releaseDownloadStatus">尚未查詢 GitHub 發布資訊。</p>
+      <a id="releaseDownloadLink" class="btn primary"
+        style="display:none;margin-top:14px"
+        target="_blank" rel="noopener noreferrer">下載 Windows ZIP 安裝包</a>
+      <p id="releaseChecksum"
+        style="font-size:12px;overflow-wrap:anywhere;margin-top:10px"></p>
+      <p style="font-size:13px;margin-top:10px">
+        請從官方 GitHub Release 下載，並先解壓縮，不要直接在 ZIP 裡執行。
+      </p>
     </div>
+
     <div class="wizard-inner-card" id="quickDownload">
       <h3>快速更新 ZIP</h3>
-      <p id="quickDownloadStatus">正在確認 Beta 3 更新附件…</p>
-      <a id="quickDownloadLink" class="btn primary" style="display:none;margin-top:12px" target="_blank" rel="noopener noreferrer">下載快速更新 ZIP</a>
-      <p id="quickFallback" style="font-size:13px;margin-top:12px">若無法讀取附件，請從 <a href="https://github.com/scoutdelsf/mediasaver-site/releases/tag/windows-beta-3" target="_blank" rel="noopener noreferrer">GitHub Beta 3 發布頁</a>選擇 QuickUpdate ZIP。</p>
+      <p id="quickDownloadStatus">尚未確認 Beta 3 更新附件。</p>
+      <a id="quickDownloadLink" class="btn primary"
+        style="display:none;margin-top:12px"
+        target="_blank" rel="noopener noreferrer">下載快速更新 ZIP</a>
+      <p id="quickFallback" style="font-size:13px;margin-top:12px">
+        若無法讀取附件，請從
+        <a href="https://github.com/scoutdelsf/mediasaver-site/releases/tag/windows-beta-3"
+          target="_blank" rel="noopener noreferrer">GitHub Beta 3 發布頁</a>
+        選擇 QuickUpdate ZIP。
+      </p>
     </div>
+
     <div class="wizard-inner-card" id="folderCheck">
       <h3>檢查解壓縮資料夾</h3>
       <p>選擇外層安裝資料夾，檢查必要檔名，不會上傳檔案。</p>
-      <button id="chooseFolderButton" class="btn" type="button" style="margin-top:14px">選擇資料夾並檢查</button>
-      <p id="folderCheckStatus" style="margin-top:12px" role="status">尚未選擇資料夾。</p>
+      <button id="chooseFolderButton" class="btn"
+        type="button" style="margin-top:14px">選擇資料夾並檢查</button>
+      <p id="folderCheckStatus" style="margin-top:12px" role="status">
+        尚未選擇資料夾。
+      </p>
       <div id="folderCheckResults" style="margin-top:10px"></div>
-      <p style="font-size:12px;margin-top:10px">僅檢查檔名，無法證明程式安全或已完成安裝。</p>
+      <p style="font-size:12px;margin-top:10px">
+        僅檢查檔名，無法證明程式安全或已完成安裝。
+      </p>
     </div>
   </div>
 
   <details id="version" class="fold-panel">
     <summary>安裝狀態與版本檢查（需要時展開）</summary>
     <div class="fold-body">
-    <h2>版本檢查</h2>
-    <div class="grid">
-      <div class="card">
-        <h3>網站最新版本</h3>
-        <div id="websiteLatestVersion" style="font-size:30px;font-weight:800;color:#60a5fa">讀取中…</div>
-        <p id="websiteVersionStatus">正在讀取 version.json…</p>
+      <h2>版本檢查</h2>
+      <div class="grid">
+        <div class="card">
+          <h3>網站頁面版本</h3>
+          <div id="websiteLatestVersion"
+            style="font-size:30px;font-weight:800;color:#60a5fa">v0.3.0</div>
+          <p id="websiteVersionStatus">尚未讀取 version.json。</p>
+        </div>
+        <div class="card">
+          <h3>MediaSaver 安裝包發布版本</h3>
+          <div id="applicationLatestVersion"
+            style="font-size:30px;font-weight:800;color:#60a5fa">尚未讀取</div>
+          <p id="applicationVersionStatus">選擇 Windows 後取得發布資訊。</p>
+        </div>
       </div>
-      <div class="card">
-        <h3>MediaSaver 安裝包發布版本</h3>
-        <div id="applicationLatestVersion" style="font-size:30px;font-weight:800;color:#60a5fa">讀取中…</div>
-        <p id="applicationVersionStatus">正在取得發布資訊</p>
+
+      <div class="card" style="margin-top:16px">
+        <h3>我的電腦安裝狀態</h3>
+        <p id="localVersionStatus">尚未檢查 MediaSaver Chrome 擴充功能。</p>
+        <p id="installedExtensionVersion" style="margin-top:12px;color:#60a5fa"></p>
+        <p id="extensionComparisonStatus" style="margin-top:8px"></p>
+        <p id="extensionBaselineStatus" style="margin-top:8px;font-size:12px"></p>
+        <button id="checkExtensionButton" class="btn"
+          type="button" style="margin-top:15px">重新檢查擴充功能</button>
+
+        <hr style="border:0;border-top:1px solid var(--border);margin:22px 0">
+
+        <h3>本機下載環境</h3>
+        <p id="hostStatus">等待擴充功能連線…</p>
+        <p id="ytDlpStatus" style="margin-top:8px"></p>
+        <p id="ffmpegStatus" style="margin-top:8px"></p>
+        <button id="checkHostButton" class="btn"
+          type="button" style="margin-top:14px" disabled>重新檢查本機程式</button>
+        <p style="font-size:12px;margin-top:12px">
+          透過既有 PING 檢查，不會開始下載。此處尚未檢測 FFmpeg 的實際版本號。
+        </p>
       </div>
-    </div>
-    <div class="card" style="margin-top:16px">
-      <h3>我的電腦安裝狀態</h3>
-      <p id="localVersionStatus">正在檢查 MediaSaver Chrome 擴充功能…</p>
-      <p id="installedExtensionVersion" style="margin-top:12px;color:#60a5fa"></p>
-      <p id="extensionComparisonStatus" style="margin-top:8px"></p>
-      <p id="extensionBaselineStatus" style="margin-top:8px;font-size:12px"></p>
-      <button id="checkExtensionButton" class="btn" type="button" style="margin-top:15px">重新檢查擴充功能</button>
-      <hr style="border:0;border-top:1px solid var(--border);margin:22px 0">
-      <h3>本機下載環境</h3>
-      <p id="hostStatus">等待擴充功能連線…</p>
-      <p id="ytDlpStatus" style="margin-top:8px"></p>
-      <p id="ffmpegStatus" style="margin-top:8px"></p>
-      <button id="checkHostButton" class="btn" type="button" style="margin-top:14px" disabled>重新檢查本機程式</button>
-      <p style="font-size:12px;margin-top:12px">透過既有 PING 檢查，不會開始下載。此處尚未檢測 FFmpeg 的實際版本號。</p>
-    </div>
-    <p id="versionError" style="color:#fca5a5"></p>
+
+      <p id="versionError" style="color:#fca5a5"></p>
     </div>
   </details>
 
   <details id="history" class="fold-panel">
     <summary>更新紀錄</summary>
     <div class="fold-body">
-    <h2>更新紀錄</h2>
-  
-    <div class="card">
-      <h3>MediaSaver 最新更新內容</h3>
-      <p id="releaseDate">發布日期：尚未發布</p>
-      <div id="changelog">
-        正在讀取版本資料…
+      <h2>Windows 更新紀錄</h2>
+      <div class="card">
+        <h3>MediaSaver 最新更新內容</h3>
+        <p id="releaseDate">發布日期：尚未讀取</p>
+        <div id="changelog">選擇 Windows 後讀取版本資料。</div>
       </div>
-    </div>
-  
-    <p style="color:#a7b3ca">
-      更新資料由 version.json 統一管理。
-    </p>
+      <p class="muted">Windows 更新資料由 version.json 管理。</p>
     </div>
   </details>
 
   <details id="help" class="fold-panel">
     <summary>疑難排解</summary>
     <div class="fold-body">
-    <h2>疑難排解</h2>
-    <div class="grid">
-      <div class="card">
-        <h3>無法連線本機程式</h3>
-        <p>未來提供 Native Messaging 設定檢查與修復教學。</p>
+      <div class="grid">
+        <div class="card">
+          <h3>無法連線本機程式</h3>
+          <p>
+            確認擴充功能已啟用、完成「開始安裝.cmd」設定，
+            並在重新開啟 Chrome 後執行版本檢查。
+          </p>
+        </div>
+        <div class="card">
+          <h3>影片無法下載</h3>
+          <p>
+            確認影片網址與權限，查看 App 或擴充功能顯示的錯誤。
+            部分平台可能需要登入或更新 yt-dlp。
+          </p>
+        </div>
+        <div class="card">
+          <h3>安全軟體警告</h3>
+          <p>請確認下載來源及警告內容，不需要關閉防毒保護。</p>
+        </div>
+        <div class="card">
+          <h3>安裝後需要更新</h3>
+          <p>
+            已安裝的使用者可選「快速更新」；
+            請依發布內容確認更新包適用的元件。
+          </p>
+        </div>
       </div>
-      <div class="card">
-        <h3>影片無法下載</h3>
-        <p>未來提供 yt-dlp 更新、平台支援與錯誤診斷。</p>
-      </div>
-      <div class="card">
-        <h3>安全軟體警告</h3>
-        <p>提供安全性檢查資訊，不要求關閉防毒保護。</p>
-      </div>
-      <div class="card">
-        <h3>安裝後需要更新</h3>
-        <p>未來提供版本比對、更新內容與安裝指引。</p>
-      </div>
-    </div>
     </div>
   </details>
+
+</div>
+
+<section id="androidView" hidden aria-labelledby="androidHeading">
+  <div class="mobile-heading">
+    <a class="top-home" href="#home">← 重新選擇系統</a>
+    <h1 id="androidHeading" tabindex="-1">Android 安裝與使用</h1>
+    <p>MediaSare Android v0.1.0 測試版 · Android 10 以上</p>
+  </div>
+
+  <div class="card">
+    <h2>下載 Android App</h2>
+    <p>
+      已測試 YouTube、Facebook 公開影片；
+      Instagram 需要登入的影片，目前可能無法下載。
+    </p>
+
+    <div class="download-actions">
+      <a class="btn primary"
+        href="https://github.com/scoutdelsf/MediaSare-Android/releases/download/v0.1.0/MediaSare-Android-v0.1.0.apk">
+        下載 APK 安裝檔
+      </a>
+      <a class="btn"
+        href="https://github.com/scoutdelsf/MediaSare-Android/releases/tag/v0.1.0"
+        target="_blank" rel="noopener noreferrer">查看版本與發布頁</a>
+      <button class="btn" type="button" data-copy="android-download">
+        複製下載連結
+      </button>
+    </div>
+
+    <p id="android-download-copy-status" role="status" class="muted"></p>
+    <input class="copy-field" id="android-download-copy-field"
+      hidden readonly aria-label="Android APK 下載連結">
+
+    <p>
+      建議用手機 Chrome 下載。按下後請查看瀏覽器的下載清單；
+      本頁不會顯示 APK 的實際下載進度。
+    </p>
+  </div>
+
+  <div class="mobile-steps">
+    <article class="mobile-step">
+      <h2>下載完成後，開啟 APK</h2>
+      <p>
+        在 Chrome 的下載清單，或「我的檔案 → 下載」，
+        找到 MediaSare-Android-v0.1.0.apk。
+        請確認已下載完成，再點開安裝。
+      </p>
+    </article>
+
+    <article class="mobile-step">
+      <h2>依手機提示完成安裝</h2>
+      <p>
+        若出現「不允許安裝未知應用程式」，
+        依提示到設定允許目前的安裝來源，再返回安裝。
+        不同品牌的選單名稱可能不同。
+      </p>
+    </article>
+
+    <article class="mobile-step">
+      <h2>分享影片網址給 MediaSare</h2>
+      <p>
+        在 YouTube 或 Facebook 開啟公開影片，
+        按「分享 → 更多／其他應用程式 → MediaSare」。
+        確認網址及 MP4／MP3 格式後，按「開始下載」。
+      </p>
+    </article>
+
+    <article class="mobile-step">
+      <h2>查看已下載的影片</h2>
+      <p>
+        完成後點「開啟剛下載的檔案」，或到「下載／MediaSare」查看。
+        下載中可以在 App 或通知中查看進度與取消。
+      </p>
+    </article>
+  </div>
+
+  <details class="fold-panel">
+    <summary>找不到分享入口，或 APK 下載沒有反應？</summary>
+    <div class="fold-body">
+      <p>
+        <strong>找不到 MediaSare：</strong>
+        先複製影片連結，開啟 App，按「貼上剪貼簿」再下載。
+      </p>
+      <p>
+        <strong>只有載入進度條：</strong>
+        若從 LINE 等 App 內開啟，請複製連結後改貼到 Chrome；
+        再查看 Chrome「下載」是否有實際檔案進度。
+        也可以開啟發布頁，在 Assets 點 APK。
+      </p>
+      <p>
+        <strong>Google 雲端硬碟連結：</strong>
+        請從檔案的「⋮ → 下載」儲存，再從「我的檔案」安裝。
+        單憑載入進度條，無法判定檔案是否損壞。
+      </p>
+      <p>
+        <strong>影片要求登入：</strong>
+        此版本不會共用 Facebook、Instagram 或其他 App 的登入狀態。
+      </p>
+    </div>
+  </details>
+</section>
+
+<section id="iphoneView" hidden aria-labelledby="iphoneHeading">
+  <div class="mobile-heading">
+    <a class="top-home" href="#home">← 重新選擇系統</a>
+    <h1 id="iphoneHeading" tabindex="-1">iPhone／iPad 捷徑使用方式</h1>
+    <p>使用免費工具在手機操作，不需要付 Apple 開發者年費。</p>
+  </div>
+
+  <div class="notice">
+    <strong>這是第三方捷徑方案。</strong><br>
+    以下使用 a-Shell mini 與開源 SW-DLT，並非 MediaSare 的原生 iOS App。
+    下載是否成功仍取決於網站、影片權限及工具相容性。
+  </div>
+
+  <div class="mobile-steps">
+    <article class="mobile-step">
+      <h2>安裝 a-Shell mini</h2>
+      <p>
+        從 App Store 安裝免費的 a-Shell mini，完成後先開啟一次。
+        它提供捷徑所需的手機執行環境。
+      </p>
+      <a class="btn primary"
+        href="https://apps.apple.com/tw/app/a-shell-mini/id1543537943"
+        target="_blank" rel="noopener noreferrer">前往 App Store 安裝</a>
+    </article>
+
+    <article class="mobile-step">
+      <h2>加入 SW-DLT 捷徑</h2>
+      <p>
+        用 iPhone 的 Safari 開啟下方連結，
+        確認捷徑內容後按「加入捷徑」。
+      </p>
+      <a class="btn primary"
+        href="https://www.icloud.com/shortcuts/695f53b649c947d998ae058d03efcc43"
+        target="_blank" rel="noopener noreferrer">加入 SW-DLT 捷徑</a>
+      <a class="btn"
+        href="https://github.com/net00-1/SW-DLT/releases/latest"
+        target="_blank" rel="noopener noreferrer">作者發布頁與更新</a>
+      <p>若捷徑連結失效，請從作者發布頁的 DOWNLOAD LINK 加入。</p>
+    </article>
+
+    <article class="mobile-step">
+      <h2>從影片的分享選單啟動</h2>
+      <p>
+        先選一支公開 YouTube 短影片，按「分享 → 更多 → SW-DLT」，
+        依畫面選擇影片或音訊。
+        第一次會準備下載元件；若提示要重新執行，就再分享一次。
+      </p>
+    </article>
+
+    <article class="mobile-step">
+      <h2>儲存到照片或檔案</h2>
+      <p>
+        完成後，在跳出的分享畫面選「儲存影片」或「儲存到檔案」。
+        若格式無法存進照片，先存到檔案，
+        再用支援該格式的播放器開啟。
+      </p>
+    </article>
+  </div>
+
+  <details class="fold-panel">
+    <summary>分享選單找不到 SW-DLT？</summary>
+    <div class="fold-body">
+      <p>
+        先複製影片連結，再開啟 iPhone「捷徑」App，點 SW-DLT 執行。
+        也可在捷徑編輯畫面的詳細資訊中，
+        確認已啟用「在分享表單中顯示」。
+      </p>
+      <p>
+        先確認公開 YouTube 影片可以下載，再測 Facebook、Instagram。
+        需要登入的影片可能仍受限制。
+      </p>
+      <a href="https://github.com/net00-1/SW-DLT"
+        target="_blank" rel="noopener noreferrer">
+        查看 SW-DLT 原始專案及使用說明
+      </a>
+    </div>
+  </details>
+</section>
+
 </main>
 
 <footer>
   MediaSaver © 2026 · 個人影音管理工具
-  <span id="footerVersion"></span>
-  <br>
+  <span id="footerVersion"></span><br>
   請遵守平台使用條款及相關著作權規範。
 </footer>
 
 <script>
-  "use strict";
-  const FALLBACK_SITE_VERSION = "0.2.8";
-  const MS_CHANNEL = "MEDIASAVER_INSTALL_CENTER_V1";
-  let extensionCheckId = "";
-  let extensionCheckTimer = null;
-  let hostCheckId = "";
-  let hostCheckTimer = null;
-  let bridgeReady = false;
-  let installedExtensionVersion = null;
-  let remoteReleaseVersion = null;
-  let testBaselineVersion = null;
-  let remoteVersionLoaded = false;
+"use strict";
 
-  function compareVersions(a, b) {
-    const valid = /^\d+(?:\.\d+){1,3}$/;
-    if (!valid.test(a) || !valid.test(b)) return null;
-    const x = a.split(".").map(Number);
-    const y = b.split(".").map(Number);
-    for (let i = 0; i < 4; i++) {
-      if ((x[i] || 0) > (y[i] || 0)) return 1;
-      if ((x[i] || 0) < (y[i] || 0)) return -1;
-    }
-    return 0;
+const FALLBACK_SITE_VERSION = "0.3.0";
+const MS_CHANNEL = "MEDIASAVER_INSTALL_CENTER_V1";
+const WINDOWS_RELEASE_PAGE =
+  "https://github.com/scoutdelsf/mediasaver-site/releases/tag/windows-beta-3";
+
+let extensionCheckId = "";
+let extensionCheckTimer = null;
+let hostCheckId = "";
+let hostCheckTimer = null;
+let bridgeReady = false;
+let installedExtensionVersion = null;
+let remoteReleaseVersion = null;
+let testBaselineVersion = null;
+let remoteVersionLoaded = false;
+let activePlatform = "home";
+let windowsInitialized = false;
+
+function setText(id, value) {
+  const element = document.getElementById(id);
+  if (element) element.textContent = value;
+}
+
+function showWebsiteVersion(version) {
+  setText("siteVersion", "v" + version);
+  setText("footerVersion", "｜網站版本 v" + version);
+  setText("websiteLatestVersion", "v" + version);
+}
+
+function compareVersions(a, b) {
+  const valid = /^\d+(?:\.\d+){1,3}$/;
+  if (!valid.test(a) || !valid.test(b)) return null;
+  const x = a.split(".").map(Number);
+  const y = b.split(".").map(Number);
+  for (let i = 0; i < 4; i++) {
+    if ((x[i] || 0) > (y[i] || 0)) return 1;
+    if ((x[i] || 0) < (y[i] || 0)) return -1;
   }
+  return 0;
+}
 
-  function updateExtensionComparison() {
-    if (!installedExtensionVersion) {
-      setText("extensionComparisonStatus", "尚未偵測到擴充功能，無法比較版本。");
-      setText("extensionBaselineStatus", "");
-      return;
-    }
-    if (!remoteVersionLoaded) {
-      setText("extensionComparisonStatus", "版本資料尚未取得，無法比較。");
-      setText("extensionBaselineStatus", "");
-      return;
-    }
-    if (remoteReleaseVersion) {
-      const diff = compareVersions(installedExtensionVersion, remoteReleaseVersion);
-      const msg = diff === null ? "版本格式異常，無法比較。" :
-        diff < 0 ? "有新版本可更新（僅顯示資訊，尚未提供自動更新）。" :
-        diff === 0 ? "目前與網站正式發布版本相同。" :
-        "目前安裝版本比網站正式發布版本新（可能為測試版）。";
-      setText("extensionComparisonStatus", msg);
-      setText("extensionBaselineStatus", "網站正式發布版本：v" + remoteReleaseVersion);
-      return;
-    }
-    if (testBaselineVersion) {
-      const diff = compareVersions(installedExtensionVersion, testBaselineVersion);
-      const msg = diff === null ? "版本格式異常，無法比較。" :
-        diff < 0 ? "低於目前測試基準版本（尚無正式安裝包）。" :
-        diff === 0 ? "與目前測試基準版本相同；尚非正式發布版本。" :
-        "高於目前測試基準版本（可能為開發版本）。";
-      setText("extensionComparisonStatus", msg);
-      setText("extensionBaselineStatus", "測試基準：v" + testBaselineVersion + "（不代表公開最新版）");
-      return;
-    }
-    setText("extensionComparisonStatus", "網站尚未設定可比較的版本。");
+function updateExtensionComparison() {
+  if (!installedExtensionVersion) {
+    setText("extensionComparisonStatus", "尚未偵測到擴充功能，無法比較版本。");
     setText("extensionBaselineStatus", "");
+    return;
   }
 
-  function setText(id, value) {
-    const element = document.getElementById(id);
-    if (element) element.textContent = value;
+  if (!remoteVersionLoaded) {
+    setText("extensionComparisonStatus", "版本資料尚未取得，無法比較。");
+    setText("extensionBaselineStatus", "");
+    return;
   }
 
-  function showWebsiteVersion(version) {
-    setText("siteVersion", "v" + version);
-    setText("footerVersion", "｜網站版本 v" + version);
-    setText("websiteLatestVersion", "v" + version);
+  if (remoteReleaseVersion) {
+    const diff = compareVersions(
+      installedExtensionVersion,
+      remoteReleaseVersion
+    );
+    const msg = diff === null
+      ? "版本格式異常，無法比較。"
+      : diff < 0
+        ? "有新版本可更新（僅顯示資訊，尚未提供自動更新）。"
+        : diff === 0
+          ? "目前與網站發布的擴充功能版本相同。"
+          : "目前安裝版本比網站發布版本新（可能為測試版）。";
+
+    setText("extensionComparisonStatus", msg);
+    setText(
+      "extensionBaselineStatus",
+      "網站發布的擴充功能版本：v" + remoteReleaseVersion
+    );
+    return;
   }
 
-  async function loadVersionInfo() {
+  if (testBaselineVersion) {
+    const diff = compareVersions(
+      installedExtensionVersion,
+      testBaselineVersion
+    );
+    const msg = diff === null
+      ? "版本格式異常，無法比較。"
+      : diff < 0
+        ? "低於目前測試基準版本。"
+        : diff === 0
+          ? "與目前測試基準版本相同。"
+          : "高於目前測試基準版本（可能為開發版本）。";
+
+    setText("extensionComparisonStatus", msg);
+    setText(
+      "extensionBaselineStatus",
+      "測試基準：v" + testBaselineVersion + "（不代表公開最新版）"
+    );
+    return;
+  }
+
+  setText("extensionComparisonStatus", "網站尚未設定可比較的版本。");
+  setText("extensionBaselineStatus", "");
+}
+
+async function loadVersionInfo() {
+  showWebsiteVersion(FALLBACK_SITE_VERSION);
+
+  try {
+    const response = await fetch(
+      "./version.json?cache=" + Date.now(),
+      {cache: "no-store"}
+    );
+    if (!response.ok) throw new Error("HTTP " + response.status);
+
+    const data = await response.json();
+    const component = data.components?.chromeExtension || {};
+    const app = data.application || {};
+    const appReleased =
+      !!app.latestVersion && app.status !== "not_published";
+
+    remoteReleaseVersion =
+      appReleased && typeof component.latestVersion === "string"
+        ? component.latestVersion
+        : null;
+
+    testBaselineVersion =
+      typeof component.testBaselineVersion === "string"
+        ? component.testBaselineVersion
+        : null;
+
+    remoteVersionLoaded = true;
+    updateExtensionComparison();
+
+    // 頁面版本以本檔案為準；Windows 元件版本仍由 version.json 管理。
     showWebsiteVersion(FALLBACK_SITE_VERSION);
+    setText("websiteVersionStatus", "Windows 版本資料已載入");
+
+    const published = app.status === "beta" || app.status === "stable";
+    const url = typeof app.downloadUrl === "string" ? app.downloadUrl : "";
+    let trusted = false;
+
     try {
-      const response = await fetch("./version.json?cache=" + Date.now(), {cache:"no-store"});
-      if (!response.ok) throw new Error("HTTP " + response.status);
-      const data = await response.json();
-      const component = data.components?.chromeExtension || {};
-      const appReleased = !!data.application?.latestVersion && data.application?.status !== "not_published";
-      remoteReleaseVersion = appReleased && typeof component.latestVersion === "string" ? component.latestVersion : null;
-      testBaselineVersion = typeof component.testBaselineVersion === "string" ? component.testBaselineVersion : null;
-      remoteVersionLoaded = true;
-      updateExtensionComparison();
-      const siteVersion = data.website?.version || FALLBACK_SITE_VERSION;
-      showWebsiteVersion(siteVersion);
-      setText("websiteVersionStatus", data.website?.status === "development" ? "網站持續開發中" : "網站版本資料已載入");
-      const app = data.application || {};
-      // Only link to an explicitly published asset from our own release repository.
-      const published = app.status === "beta" || app.status === "stable";
-      const url = typeof app.downloadUrl === "string" ? app.downloadUrl : "";
-      let trusted = false;
-      try {
-        const uri = new URL(url);
-        trusted = uri.protocol === "https:" && uri.hostname === "github.com" &&
-          uri.pathname.startsWith("/scoutdelsf/mediasaver-site/releases/download/") &&
-          uri.pathname.toLowerCase().endsWith(".zip");
-      } catch (_) {}
-      const canDownload = published && !!app.latestVersion && trusted;
-      const releaseButton = document.getElementById("releaseDownloadLink");
-      releaseButton.style.display = canDownload ? "inline-block" : "none";
-      if (canDownload) {
-        releaseButton.href = url;
-        setText("releaseDownloadStatus", "可下載 MediaSaver Windows " +
-          (app.status === "beta" ? "測試版" : "正式版") + " v" + app.latestVersion);
-        setText("releaseChecksum", app.sha256 ? "ZIP SHA-256：" + app.sha256 :
-          "建議在 GitHub Releases 提供 SHA-256 驗證檔。");
-      } else {
-        releaseButton.removeAttribute("href");
-        setText("releaseDownloadStatus", "安裝包尚未發布或下載網址尚未完成驗證。請先到 GitHub Releases 上傳 ZIP，再設定 version.json。");
-        setText("releaseChecksum", "");
+      const uri = new URL(url);
+      trusted =
+        uri.protocol === "https:" &&
+        uri.hostname === "github.com" &&
+        uri.pathname.startsWith(
+          "/scoutdelsf/mediasaver-site/releases/download/"
+        ) &&
+        uri.pathname.toLowerCase().endsWith(".zip");
+    } catch (_) {}
+
+    const canDownload = published && !!app.latestVersion && trusted;
+    const releaseButton = document.getElementById("releaseDownloadLink");
+    releaseButton.style.display = canDownload ? "inline-block" : "none";
+
+    if (canDownload) {
+      releaseButton.href = url;
+      setText(
+        "releaseDownloadStatus",
+        "可下載 MediaSaver Windows " +
+          (app.status === "beta" ? "測試版" : "正式版") +
+          " v" + app.latestVersion
+      );
+      setText(
+        "releaseChecksum",
+        app.sha256
+          ? "ZIP SHA-256：" + app.sha256
+          : "發布頁尚未提供 SHA-256 驗證資訊。"
+      );
+    } else {
+      releaseButton.removeAttribute("href");
+      setText(
+        "releaseDownloadStatus",
+        "正在從 GitHub Release 確認安裝包附件。"
+      );
+      setText("releaseChecksum", "");
+    }
+
+    const released =
+      !!app.latestVersion && app.status !== "not_published";
+
+    setText(
+      "applicationLatestVersion",
+      released ? "v" + app.latestVersion : "尚未正式發布"
+    );
+    setText(
+      "applicationVersionStatus",
+      released
+        ? app.status === "beta"
+          ? "Windows Beta 3（預先發布版）"
+          : "最新正式發布版本"
+        : "目前仍在測試階段"
+    );
+    setText(
+      "releaseDate",
+      "發布日期：" + (app.releaseDate || "尚未發布")
+    );
+
+    const changelog = document.getElementById("changelog");
+    changelog.replaceChildren();
+
+    if (Array.isArray(app.changelog) && app.changelog.length) {
+      const list = document.createElement("ul");
+      for (const change of app.changelog) {
+        const item = document.createElement("li");
+        item.textContent = String(change);
+        list.appendChild(item);
       }
-      const released = !!app.latestVersion && app.status !== "not_published";
-      setText("applicationLatestVersion", released ? "v" + app.latestVersion : "尚未正式發布");
-      setText("applicationVersionStatus", released ? (app.status === "beta" ? "Windows Beta 3（預先發布版）" : "最新正式發布版本") : "目前仍在測試階段");
-      setText("releaseDate", "發布日期：" + (app.releaseDate || "尚未發布"));
-      const changelog = document.getElementById("changelog");
-      changelog.replaceChildren();
-      if (Array.isArray(app.changelog) && app.changelog.length) {
-        const list = document.createElement("ul");
-        for (const change of app.changelog) {
-          const item = document.createElement("li");
-          item.textContent = String(change);
-          list.appendChild(item);
-        }
-        changelog.appendChild(list);
-      } else {
-        changelog.textContent = "目前尚無正式版本更新紀錄。";
-      }
-      await findBeta3Assets();
-      setText("versionError", "");
-    } catch (error) {
-      remoteVersionLoaded = false;
-      updateExtensionComparison();
-      setText("websiteVersionStatus", "版本資料讀取失敗");
-      setText("applicationLatestVersion", "無法取得");
-      setText("applicationVersionStatus", "請稍後再試");
-      setText("releaseDownloadStatus", "無法讀取發布資訊，下載暫不可用。");
-      document.getElementById("releaseDownloadLink").style.display = "none";
-      await findBeta3Assets();
-      setText("versionError", "無法讀取 version.json：" + error.message);
+      changelog.appendChild(list);
+    } else {
+      changelog.textContent = "目前尚無版本更新紀錄。";
     }
-  }
 
-  // The release page is confirmed. Resolve actual asset URLs from GitHub API,
-  // never infer an asset filename from a timestamp or previous Beta.
-  async function findBeta3Assets() {
-    const releasePage = "https://github.com/scoutdelsf/mediasaver-site/releases/tag/windows-beta-3";
-    const mainButton = document.getElementById("releaseDownloadLink");
-    const quickButton = document.getElementById("quickDownloadLink");
-    const quickStatus = document.getElementById("quickDownloadStatus");
-    const fullStatus = document.getElementById("releaseDownloadStatus");
-    mainButton.href = releasePage;
-    mainButton.style.display = "inline-block";
-    mainButton.textContent = "查看 Beta 3 完整安裝包";
-    quickButton.href = releasePage;
-    quickButton.style.display = "inline-block";
-    quickButton.textContent = "查看 Beta 3 快速更新包";
-    fullStatus.textContent = "Beta 3 已發布。正在查詢實際 ZIP 附件名稱…";
-    quickStatus.textContent = "Beta 3 快速更新包已發布，正在確認 ZIP 附件…";
-    try {
-      const resp = await fetch("https://api.github.com/repos/scoutdelsf/mediasaver-site/releases/tags/windows-beta-3", {headers:{Accept:"application/vnd.github+json"}});
-      if (!resp.ok) throw Error("GitHub API HTTP " + resp.status);
-      const release = await resp.json();
-      const assets = Array.isArray(release.assets) ? release.assets : [];
-      const valid = a => typeof a?.name === "string" && /\.zip$/i.test(a.name) &&
-        typeof a.browser_download_url === "string" &&
-        a.browser_download_url.startsWith("https://github.com/scoutdelsf/mediasaver-site/releases/download/windows-beta-3/");
-      const full = assets.find(a => valid(a) && /^MediaSaver-Windows-Beta-/i.test(a.name));
-      const quick = assets.find(a => valid(a) && /QuickUpdate/i.test(a.name));
-      if (full) {
-        mainButton.href = full.browser_download_url;
-        mainButton.textContent = "下載完整安裝包";
-        fullStatus.textContent = full.name;
-      } else fullStatus.textContent = "尚未辨識完整安裝 ZIP，請到 GitHub Release 頁確認。";
-      if (quick) {
-        quickButton.href = quick.browser_download_url;
-        quickButton.textContent = "下載快速更新包";
-        quickStatus.textContent = quick.name;
-      } else quickStatus.textContent = "尚未辨識快速更新 ZIP，請到 GitHub Release 頁確認。";
-    } catch (error) {
-      fullStatus.textContent = "附件資訊目前無法自動讀取，請在 GitHub Beta 3 頁面選擇完整安裝包。";
-      quickStatus.textContent = "附件資訊目前無法自動讀取，請在 GitHub Beta 3 頁面選擇 QuickUpdate ZIP。";
-    }
-  }
-
-  function checkLocalHost() {
-    if (!bridgeReady) {
-      setText("hostStatus", "尚未連線擴充功能，無法檢查本機程式。");
-      return;
-    }
-    if (hostCheckTimer !== null) clearTimeout(hostCheckTimer);
-    hostCheckId = (crypto.randomUUID ? crypto.randomUUID() : Date.now().toString(36) + Math.random().toString(36).slice(2));
-    const requestId = hostCheckId;
-    setText("hostStatus", "正在連線 MediaSaverHost.exe…");
-    setText("ytDlpStatus", "");
-    setText("ffmpegStatus", "");
-    window.postMessage({channel:MS_CHANNEL,type:"HOST_PING_REQUEST",requestId},location.origin);
-    hostCheckTimer = setTimeout(() => {
-      if (hostCheckId !== requestId) return;
-      hostCheckId = "";
-      setText("hostStatus", "本機程式檢查逾時，請確認下載程式與 Native Messaging 設定。");
-    }, 15000);
-  }
-
-  function checkMediaSaverExtension() {
-    if (extensionCheckTimer !== null) clearTimeout(extensionCheckTimer);
-    const requestId = (crypto.randomUUID ? crypto.randomUUID() : Date.now().toString(36) + Math.random().toString(36).slice(2));
-    extensionCheckId = requestId;
-    setText("localVersionStatus", "正在檢查 Chrome 擴充功能…");
-    installedExtensionVersion = null;
-    setText("installedExtensionVersion", "");
+    setText("versionError", "");
+  } catch (error) {
+    remoteVersionLoaded = false;
     updateExtensionComparison();
-    bridgeReady = false;
-    document.getElementById("checkHostButton").disabled = true;
-    setText("hostStatus", "等待擴充功能連線…");
-    setText("ytDlpStatus", "");
-    setText("ffmpegStatus", "");
-    window.postMessage({channel:MS_CHANNEL, type:"EXTENSION_STATUS_REQUEST", requestId}, location.origin);
-    extensionCheckTimer = setTimeout(() => {
-      if (extensionCheckId !== requestId) return;
-      extensionCheckTimer = null;
-      setText("localVersionStatus", "尚未偵測到 MediaSaver 擴充功能。請確認已啟用並重新整理網頁。");
-    }, 3500);
+    setText("websiteVersionStatus", "Windows 版本資料讀取失敗");
+    setText("applicationLatestVersion", "無法取得");
+    setText("applicationVersionStatus", "請稍後再試");
+    setText("changelog", "無法讀取版本設定，請查看 GitHub 發布頁。");
+    setText("versionError", "無法讀取 version.json：" + error.message);
   }
 
-  window.addEventListener("message", event => {
-    if (event.source !== window || event.origin !== location.origin) return;
-    const data = event.data;
-    if (!data || data.channel !== MS_CHANNEL) return;
-    if (data.type === "EXTENSION_BRIDGE_READY") {
-      checkMediaSaverExtension();
-      return;
+  await findBeta3Assets();
+}
+
+async function findBeta3Assets() {
+  const mainButton = document.getElementById("releaseDownloadLink");
+  const quickButton = document.getElementById("quickDownloadLink");
+  const quickStatus = document.getElementById("quickDownloadStatus");
+  const fullStatus = document.getElementById("releaseDownloadStatus");
+
+  mainButton.href = WINDOWS_RELEASE_PAGE;
+  mainButton.style.display = "inline-block";
+  mainButton.textContent = "查看 Beta 3 完整安裝包";
+
+  quickButton.href = WINDOWS_RELEASE_PAGE;
+  quickButton.style.display = "inline-block";
+  quickButton.textContent = "查看 Beta 3 快速更新包";
+
+  fullStatus.textContent = "Beta 3 已發布。正在查詢實際 ZIP 附件名稱…";
+  quickStatus.textContent = "正在確認 Beta 3 快速更新 ZIP 附件…";
+
+  try {
+    const resp = await fetch(
+      "https://api.github.com/repos/scoutdelsf/mediasaver-site/releases/tags/windows-beta-3",
+      {headers: {Accept: "application/vnd.github+json"}}
+    );
+    if (!resp.ok) throw Error("GitHub API HTTP " + resp.status);
+
+    const release = await resp.json();
+    const assets = Array.isArray(release.assets) ? release.assets : [];
+
+    const valid = asset =>
+      typeof asset?.name === "string" &&
+      /\.zip$/i.test(asset.name) &&
+      typeof asset.browser_download_url === "string" &&
+      asset.browser_download_url.startsWith(
+        "https://github.com/scoutdelsf/mediasaver-site/releases/download/windows-beta-3/"
+      );
+
+    const full = assets.find(
+      asset => valid(asset) && /^MediaSaver-Windows-Beta-/i.test(asset.name)
+    );
+    const quick = assets.find(
+      asset => valid(asset) && /QuickUpdate/i.test(asset.name)
+    );
+
+    if (full) {
+      mainButton.href = full.browser_download_url;
+      mainButton.textContent = "下載完整安裝包";
+      fullStatus.textContent = full.name;
+    } else {
+      fullStatus.textContent =
+        "尚未辨識完整安裝 ZIP，請到 GitHub Release 頁確認。";
     }
-    if (data.type === "HOST_PING_RESPONSE" && data.requestId === hostCheckId) {
-      if (hostCheckTimer !== null) clearTimeout(hostCheckTimer);
-      hostCheckTimer = null;
-      hostCheckId = "";
-      if (!data.ok) {
-        setText("hostStatus", "本機程式連線失敗：" + String(data.error || "未知錯誤").slice(0, 250));
-        return;
-      }
-      setText("hostStatus", "本機程式連線成功。");
-      const status = String(data.version || "");
-      const match = status.match(/yt-dlp\s+([0-9][0-9.]+)/i);
-      setText("ytDlpStatus", "yt-dlp：" + (match ? "v" + match[1] : "版本未知"));
-      setText("ffmpegStatus", status.includes("FFmpeg ready") ? "FFmpeg：已安裝（可用性檢查通過）" : status.includes("FFmpeg missing") ? "FFmpeg：缺少必要檔案" : "FFmpeg：狀態未知");
-      return;
+
+    if (quick) {
+      quickButton.href = quick.browser_download_url;
+      quickButton.textContent = "下載快速更新包";
+      quickStatus.textContent = quick.name;
+    } else {
+      quickStatus.textContent =
+        "尚未辨識快速更新 ZIP，請到 GitHub Release 頁確認。";
     }
-    if (data.type !== "EXTENSION_STATUS_RESPONSE" || data.requestId !== extensionCheckId || data.installed !== true) return;
-    if (typeof data.extensionVersion !== "string" || !/^\d+\.\d+\.\d+(?:\.\d+)?$/.test(data.extensionVersion)) return;
-    if (extensionCheckTimer !== null) clearTimeout(extensionCheckTimer);
+  } catch (_) {
+    fullStatus.textContent =
+      "附件資訊目前無法自動讀取，請在 GitHub Beta 3 頁面選擇完整安裝包。";
+    quickStatus.textContent =
+      "附件資訊目前無法自動讀取，請在 GitHub Beta 3 頁面選擇 QuickUpdate ZIP。";
+  }
+}
+
+function requestId() {
+  return crypto.randomUUID
+    ? crypto.randomUUID()
+    : Date.now().toString(36) + Math.random().toString(36).slice(2);
+}
+
+function checkLocalHost() {
+  if (!bridgeReady) {
+    setText("hostStatus", "尚未連線擴充功能，無法檢查本機程式。");
+    return;
+  }
+
+  if (hostCheckTimer !== null) clearTimeout(hostCheckTimer);
+  hostCheckId = requestId();
+  const currentId = hostCheckId;
+
+  setText("hostStatus", "正在連線 MediaSaverHost.exe…");
+  setText("ytDlpStatus", "");
+  setText("ffmpegStatus", "");
+
+  window.postMessage(
+    {
+      channel: MS_CHANNEL,
+      type: "HOST_PING_REQUEST",
+      requestId: currentId
+    },
+    location.origin
+  );
+
+  hostCheckTimer = setTimeout(() => {
+    if (hostCheckId !== currentId) return;
+    hostCheckId = "";
+    hostCheckTimer = null;
+    setText(
+      "hostStatus",
+      "本機程式檢查逾時，請確認下載程式與 Native Messaging 設定。"
+    );
+  }, 15000);
+}
+
+function checkMediaSaverExtension() {
+  if (extensionCheckTimer !== null) clearTimeout(extensionCheckTimer);
+
+  installedExtensionVersion = null;
+  bridgeReady = false;
+  document.getElementById("checkHostButton").disabled = true;
+
+  setText("installedExtensionVersion", "");
+  setText("hostStatus", "等待擴充功能連線…");
+  setText("ytDlpStatus", "");
+  setText("ffmpegStatus", "");
+  updateExtensionComparison();
+
+  if (location.protocol === "file:") {
+    setText(
+      "localVersionStatus",
+      "目前為本機檔案預覽。請在正式 GitHub Pages 網站進行擴充功能連線檢查。"
+    );
+    return;
+  }
+
+  extensionCheckId = requestId();
+  const currentId = extensionCheckId;
+
+  setText("localVersionStatus", "正在檢查 Chrome 擴充功能…");
+
+  window.postMessage(
+    {
+      channel: MS_CHANNEL,
+      type: "EXTENSION_STATUS_REQUEST",
+      requestId: currentId
+    },
+    location.origin
+  );
+
+  extensionCheckTimer = setTimeout(() => {
+    if (extensionCheckId !== currentId) return;
     extensionCheckTimer = null;
-    extensionCheckId = "";
-    setText("localVersionStatus", "已偵測到 MediaSaver Chrome 擴充功能。");
-    installedExtensionVersion = data.extensionVersion;
-    setText("installedExtensionVersion", "安裝版本：v" + data.extensionVersion);
-    updateExtensionComparison();
-    bridgeReady = true;
-    document.getElementById("checkHostButton").disabled = false;
-    checkLocalHost();
-  });
-  document.getElementById("checkExtensionButton").addEventListener("click", checkMediaSaverExtension);
-  document.getElementById("checkHostButton").addEventListener("click", checkLocalHost);
-  async function inspectInstallFolder() {
-    const status = document.getElementById("folderCheckStatus");
-    const results = document.getElementById("folderCheckResults");
-    const btn = document.getElementById("chooseFolderButton");
-    results.replaceChildren();
-    if (typeof window.showDirectoryPicker !== "function") {
-      status.textContent = "請使用新版桌面 Chrome 開啟本網站，才能選取資料夾。";
+    setText(
+      "localVersionStatus",
+      "尚未偵測到 MediaSaver 擴充功能。請確認已啟用並重新整理網頁。"
+    );
+  }, 3500);
+}
+
+window.addEventListener("message", event => {
+  if (event.source !== window || event.origin !== location.origin) return;
+  const data = event.data;
+
+  if (
+    !data ||
+    data.channel !== MS_CHANNEL ||
+    activePlatform !== "windows"
+  ) return;
+
+  if (data.type === "EXTENSION_BRIDGE_READY") {
+    checkMediaSaverExtension();
+    return;
+  }
+
+  if (
+    data.type === "HOST_PING_RESPONSE" &&
+    data.requestId === hostCheckId
+  ) {
+    if (hostCheckTimer !== null) clearTimeout(hostCheckTimer);
+    hostCheckTimer = null;
+    hostCheckId = "";
+
+    if (!data.ok) {
+      setText(
+        "hostStatus",
+        "本機程式連線失敗：" +
+          String(data.error || "未知錯誤").slice(0, 250)
+      );
       return;
     }
-    const extensionFiles = ["manifest.json", "background.js", "content.js", "site-bridge.js"];
-    const tools = ["MediaSaverHost.exe", "yt-dlp.exe", "ffmpeg.exe", "ffprobe.exe"];
-    try {
-      btn.disabled = true;
-      status.textContent = "正在檢查資料夾及子資料夾…";
-      const folder = await window.showDirectoryPicker({mode:"read"});
-      // Build a shallow directory index. Do not read file contents or upload files.
-      // Three nested levels are enough for common ZIP extraction layouts.
-      const directories = [];
-      const errors = [];
-      const scan = async (handle, path, depth) => {
-        const files = new Set();
-        const children = [];
-        try {
-          for await (const [name, entry] of handle.entries()) {
-            if (entry.kind === "file") files.add(name.toLowerCase());
-            else if (entry.kind === "directory") children.push([name, entry]);
-          }
-        } catch (e) {
-          errors.push(path + "：" + String(e.message || e));
+
+    setText("hostStatus", "本機程式連線成功。");
+    const status = String(data.version || "");
+    const match = status.match(/yt-dlp\s+([0-9][0-9.]+)/i);
+
+    setText("ytDlpStatus", "yt-dlp：" + (match ? "v" + match[1] : "版本未知"));
+    setText(
+      "ffmpegStatus",
+      status.includes("FFmpeg ready")
+        ? "FFmpeg：已安裝（可用性檢查通過）"
+        : status.includes("FFmpeg missing")
+          ? "FFmpeg：缺少必要檔案"
+          : "FFmpeg：狀態未知"
+    );
+    return;
+  }
+
+  if (
+    data.type !== "EXTENSION_STATUS_RESPONSE" ||
+    data.requestId !== extensionCheckId ||
+    data.installed !== true
+  ) return;
+
+  if (
+    typeof data.extensionVersion !== "string" ||
+    !/^\d+\.\d+\.\d+(?:\.\d+)?$/.test(data.extensionVersion)
+  ) return;
+
+  if (extensionCheckTimer !== null) clearTimeout(extensionCheckTimer);
+  extensionCheckTimer = null;
+  extensionCheckId = "";
+
+  setText(
+    "localVersionStatus",
+    "已偵測到 MediaSaver Chrome 擴充功能。"
+  );
+  installedExtensionVersion = data.extensionVersion;
+  setText(
+    "installedExtensionVersion",
+    "安裝版本：v" + data.extensionVersion
+  );
+  updateExtensionComparison();
+
+  bridgeReady = true;
+  document.getElementById("checkHostButton").disabled = false;
+  checkLocalHost();
+});
+
+document.getElementById("checkExtensionButton")
+  .addEventListener("click", checkMediaSaverExtension);
+document.getElementById("checkHostButton")
+  .addEventListener("click", checkLocalHost);
+
+async function inspectInstallFolder() {
+  const status = document.getElementById("folderCheckStatus");
+  const results = document.getElementById("folderCheckResults");
+  const button = document.getElementById("chooseFolderButton");
+  results.replaceChildren();
+
+  if (typeof window.showDirectoryPicker !== "function") {
+    status.textContent =
+      "請使用新版桌面 Chrome 開啟本網站，才能選取資料夾。";
+    return;
+  }
+
+  const extensionFiles = [
+    "manifest.json", "background.js", "content.js", "site-bridge.js"
+  ];
+  const tools = [
+    "MediaSaverHost.exe", "yt-dlp.exe", "ffmpeg.exe", "ffprobe.exe"
+  ];
+
+  try {
+    button.disabled = true;
+    status.textContent = "正在檢查資料夾及子資料夾…";
+    const folder = await window.showDirectoryPicker({mode: "read"});
+    const directories = [];
+    const errors = [];
+
+    const scan = async (handle, path, depth) => {
+      const files = new Set();
+      const children = [];
+
+      try {
+        for await (const [name, entry] of handle.entries()) {
+          if (entry.kind === "file") files.add(name.toLowerCase());
+          else if (entry.kind === "directory") children.push([name, entry]);
         }
-        directories.push({path, files});
-        if (depth < 3) {
-          for (const [name, child] of children) {
-            await scan(child, path + "/" + name, depth + 1);
-          }
+      } catch (error) {
+        errors.push(path + "：" + String(error.message || error));
+      }
+
+      directories.push({path, files});
+
+      if (depth < 3) {
+        for (const [name, child] of children) {
+          await scan(child, path + "/" + name, depth + 1);
         }
-      };
-      await scan(folder, folder.name, 0);
-      // Find the directory with most recognized extension files, regardless
-      // of its name or whether it is nested under a second extracted folder.
-      const ranked = directories.map(d => ({
-        ...d,
-        score: extensionFiles.filter(n => d.files.has(n.toLowerCase())).length
-      })).sort((x,y) => y.score - x.score);
-      const ext = ranked.find(d => d.score > 0) || null;
-      // Native host tools are expected in the package root, but allow a
-      // nested package folder when a ZIP added an extra wrapping directory.
-      const rankedTools = directories.map(d => ({
-        ...d,
-        score: tools.filter(n => d.files.has(n.toLowerCase())).length
-      })).sort((x,y) => y.score - x.score);
-      const toolDir = rankedTools.find(d => d.score > 0) || null;
-      const ul = document.createElement("ul");
-      ul.style.paddingLeft = "21px";
-      let missing = 0;
-      const row = (name, exists, required, path) => {
-        if (required && !exists) missing++;
-        const li = document.createElement("li");
-        li.textContent = (exists ? "✓ " : required ? "✗ " : "– ") + name +
-          "（" + (path || "未找到") + "）" +
-          (exists ? "：存在" : required ? "：缺少必要檔案" : "：選用");
-        li.style.color = exists ? "#cbd5e1" : required ? "#fca5a5" : "#cbd5e1";
-        ul.appendChild(li);
-      };
-      const extPath = ext ? ext.path : null;
-      const toolPath = toolDir ? toolDir.path : null;
-      for (const name of extensionFiles)
-        row(name, !!ext?.files.has(name.toLowerCase()), true, extPath);
-      for (const name of tools)
-        row(name, !!toolDir?.files.has(name.toLowerCase()), true, toolPath);
-      const installerNames = ["安裝固定id授權.ps1", "開始安裝.cmd", "setup.ps1"];
-      const installer = directories.find(d => installerNames.some(n => d.files.has(n)));
-      row("安裝腳本", !!installer, false, installer?.path);
-      const manifestHost = directories.find(d => d.files.has("native-host.json"));
-      row("native-host.json", !!manifestHost, false, manifestHost?.path);
-      results.appendChild(ul);
-      const note = document.createElement("p");
-      note.style.whiteSpace = "pre-wrap";
-      note.style.fontSize = "13px";
-      note.style.color = "#a7b3ca";
-      note.textContent = "資料夾搜尋範圍（最多三層）：\n" +
-        directories.map(d => "• " + d.path + "（檔案 " + d.files.size + " 個）").join("\n") +
-        (errors.length ? "\n讀取失敗：\n" + errors.join("\n") : "");
-      results.appendChild(note);
-      status.textContent = "已檢查「" + folder.name + "」：" + (missing
-        ? "缺少 " + missing + " 個必要檔案。請查看下方搜尋到的資料夾路徑。"
+      }
+    };
+
+    await scan(folder, folder.name, 0);
+
+    const rankedExtensions = directories.map(directory => ({
+      ...directory,
+      score: extensionFiles.filter(
+        name => directory.files.has(name.toLowerCase())
+      ).length
+    })).sort((a, b) => b.score - a.score);
+
+    const rankedTools = directories.map(directory => ({
+      ...directory,
+      score: tools.filter(
+        name => directory.files.has(name.toLowerCase())
+      ).length
+    })).sort((a, b) => b.score - a.score);
+
+    const extensionDirectory =
+      rankedExtensions.find(directory => directory.score > 0) || null;
+    const toolDirectory =
+      rankedTools.find(directory => directory.score > 0) || null;
+
+    const list = document.createElement("ul");
+    list.style.paddingLeft = "21px";
+    let missing = 0;
+
+    const row = (name, exists, required, path) => {
+      if (required && !exists) missing++;
+
+      const item = document.createElement("li");
+      item.textContent =
+        (exists ? "✓ " : required ? "✗ " : "– ") +
+        name + "（" + (path || "未找到") + "）" +
+        (exists ? "：存在" : required ? "：缺少必要檔案" : "：選用");
+      item.style.color =
+        exists ? "#cbd5e1" : required ? "#fca5a5" : "#cbd5e1";
+      list.appendChild(item);
+    };
+
+    for (const name of extensionFiles) {
+      row(
+        name,
+        !!extensionDirectory?.files.has(name.toLowerCase()),
+        true,
+        extensionDirectory?.path
+      );
+    }
+
+    for (const name of tools) {
+      row(
+        name,
+        !!toolDirectory?.files.has(name.toLowerCase()),
+        true,
+        toolDirectory?.path
+      );
+    }
+
+    const installerNames = [
+      "安裝固定id授權.ps1", "開始安裝.cmd", "setup.ps1"
+    ];
+    const installer = directories.find(directory =>
+      installerNames.some(name => directory.files.has(name))
+    );
+    row("安裝腳本", !!installer, false, installer?.path);
+
+    const nativeManifest = directories.find(
+      directory => directory.files.has("native-host.json")
+    );
+    row(
+      "native-host.json",
+      !!nativeManifest,
+      false,
+      nativeManifest?.path
+    );
+
+    results.appendChild(list);
+
+    const note = document.createElement("p");
+    note.style.whiteSpace = "pre-wrap";
+    note.style.fontSize = "13px";
+    note.style.color = "#a7b3ca";
+    note.textContent =
+      "資料夾搜尋範圍（最多三層）：\n" +
+      directories.map(directory =>
+        "• " + directory.path +
+        "（檔案 " + directory.files.size + " 個）"
+      ).join("\n") +
+      (errors.length ? "\n讀取失敗：\n" + errors.join("\n") : "");
+
+    results.appendChild(note);
+
+    status.textContent =
+      "已檢查「" + folder.name + "」：" +
+      (missing
+        ? "缺少 " + missing +
+          " 個必要檔案。請查看下方搜尋到的資料夾路徑。"
         : "必要檔案齊全（僅檢查檔名，未驗證檔案內容及安裝狀態）。");
-    } catch (error) {
-      status.textContent = error?.name === "AbortError" ?
-        "已取消選擇資料夾。" : "無法檢查資料夾：" + String(error.message || error);
-    } finally {
-      btn.disabled = false;
-    }
+  } catch (error) {
+    status.textContent =
+      error?.name === "AbortError"
+        ? "已取消選擇資料夾。"
+        : "無法檢查資料夾：" + String(error.message || error);
+  } finally {
+    button.disabled = false;
   }
-  document.getElementById("chooseFolderButton").addEventListener("click", inspectInstallFolder);
-  // Guided installation: instructional only. All local actions need user approval.
-  const steps = [
-    {
-      title: "下載官方 Windows Beta 安裝包",
-      body: "使用下方「下載 Windows ZIP 安裝包」按鈕。檔案來源為本專案 GitHub Releases；尚未完成下載前請勿繼續安裝。",
-      action: "download"
-    },
-    {
-      title: "解壓縮到固定資料夾",
-      body: "在 Windows 檔案總管對 ZIP 選擇「全部解壓縮」。建議放在不會經常變動的位置，例如文件資料夾內的 MediaSaver。請保留擴充功能資料夾在固定位置，因為 Chrome 是從該資料夾載入；本機程式會由安裝器複製到使用者 AppData。",
-      action: "none"
-    },
-    {
-      title: "檢查資料夾內必要檔案",
-      body: "點「選擇資料夾並檢查」，選擇解壓縮後的外層安裝包資料夾。結果應顯示必要檔案齊全。此功能只檢查檔名，不驗證來源、雜湊或程式安全性。",
-      action: "folder"
-    },
-    {
-      title: "將 MediaSaver 載入 Chrome",
-      body: "複製 chrome://extensions/ 到網址列開啟，啟用右上角「開發人員模式」，點「載入未封裝項目」，選擇安裝包中的 MediaSaver 擴充功能子資料夾（裡面有 manifest.json）。新版固定 ID 應為 gpbhkokanibcpnbkjoagljafdefcejbh。不要移除原有的 MediaSaver。",
-      action: "chrome"
-    },
-    {
-      title: "雙擊開始安裝.cmd",
-      body: "回到解壓縮後的外層資料夾，雙擊「開始安裝.cmd」，依照視窗指示完成 Native Messaging 授權。這一步需要本機執行，網站不能直接代你啟動 PowerShell；如遭 Apex One 警告，請先檢查訊息內容，勿關閉防護。",
-      action: "none"
-    },
-    {
-      title: "測試本機連線與下載",
-      body: "重新載入 Chrome 擴充功能並關閉、重開安裝中心分頁。到下方「版本檢查」按「重新檢查擴充功能」及「重新檢查本機程式」，確認 yt-dlp 與 FFmpeg 狀態。最後到你有權下載的影片頁面測試 MP4、取消下載及開啟下載資料夾。",
-      action: "verify"
-    }
-  ];
-  let guideStep = 0;
-  const wizardContent = document.getElementById("guideStepContent");
-  const releaseModule = document.getElementById("releaseDownload");
-  const folderModule = document.getElementById("folderCheck");
-  const moduleParking = document.getElementById("wizardModules");
-  function openPanel(id) {
-    const panel = document.getElementById(id);
-    if (panel?.tagName === "DETAILS") panel.open = true;
-    panel?.scrollIntoView({behavior:"smooth",block:"start"});
+}
+
+document.getElementById("chooseFolderButton")
+  .addEventListener("click", inspectInstallFolder);
+
+const steps = [
+  {
+    title: "下載官方 Windows Beta 安裝包",
+    short: "下載",
+    body:
+      "使用下方按鈕下載完整安裝 ZIP。檔案來源為本專案 GitHub Releases；尚未完成下載前請勿繼續安裝。",
+    action: "download"
+  },
+  {
+    title: "解壓縮到固定資料夾",
+    short: "解壓縮",
+    body:
+      "在 Windows 檔案總管對 ZIP 選擇「全部解壓縮」。建議放在不會經常變動的位置，例如文件資料夾內的 MediaSaver。請保留擴充功能資料夾在固定位置，因為 Chrome 是從該資料夾載入；本機程式會由安裝器複製到使用者 AppData。",
+    action: "none"
+  },
+  {
+    title: "檢查資料夾內必要檔案",
+    short: "檢查檔案",
+    body:
+      "點「選擇資料夾並檢查」，選擇解壓縮後的外層安裝包資料夾。結果應顯示必要檔案齊全。此功能只檢查檔名，不驗證來源、雜湊或程式安全性。",
+    action: "folder"
+  },
+  {
+    title: "將 MediaSaver 載入 Chrome",
+    short: "Chrome",
+    body:
+      "複製 chrome://extensions/ 到網址列開啟，啟用右上角「開發人員模式」，點「載入未封裝項目」，選擇安裝包中的 MediaSaver 擴充功能子資料夾（裡面有 manifest.json）。新版固定 ID 應為 gpbhkokanibcpnbkjoagljafdefcejbh。不要移除原有的 MediaSaver。",
+    action: "chrome"
+  },
+  {
+    title: "雙擊開始安裝.cmd",
+    short: "安裝程式",
+    body:
+      "回到解壓縮後的外層資料夾，雙擊「開始安裝.cmd」，依照視窗指示完成 Native Messaging 授權。這一步需要本機執行，網站不能直接代你啟動 PowerShell；如遭 Apex One 警告，請先檢查訊息內容，勿關閉防護。",
+    action: "none"
+  },
+  {
+    title: "測試本機連線與下載",
+    short: "測試",
+    body:
+      "重新載入 Chrome 擴充功能並關閉、重開安裝中心分頁。到下方「版本檢查」按「重新檢查擴充功能」及「重新檢查本機程式」，確認 yt-dlp 與 FFmpeg 狀態。最後到你有權下載的影片頁面測試 MP4、取消下載及開啟下載資料夾。",
+    action: "verify"
   }
-  document.querySelectorAll('[data-open-panel]').forEach(a => {
-    a.addEventListener('click', () => openPanel(a.dataset.openPanel));
+];
+
+let guideStep = 0;
+const wizardContent = document.getElementById("guideStepContent");
+const releaseModule = document.getElementById("releaseDownload");
+const folderModule = document.getElementById("folderCheck");
+const moduleParking = document.getElementById("wizardModules");
+
+function openPanel(id) {
+  const panel = document.getElementById(id);
+  if (panel?.tagName === "DETAILS") panel.open = true;
+  panel?.scrollIntoView({behavior: "smooth", block: "start"});
+}
+
+document.querySelectorAll("[data-open-panel]").forEach(link => {
+  link.addEventListener("click", () => {
+    openPanel(link.dataset.openPanel);
   });
-  document.querySelectorAll('nav a[href^="#"]').forEach(a => {
-    a.addEventListener('click', () => {
-      const id = a.getAttribute('href').slice(1);
-      if (document.getElementById(id)?.tagName === 'DETAILS') openPanel(id);
-    });
+});
+
+document.querySelectorAll('nav a[href^="#"]').forEach(link => {
+  link.addEventListener("click", () => {
+    const id = link.getAttribute("href").slice(1);
+    if (document.getElementById(id)?.tagName === "DETAILS") openPanel(id);
   });
-  function renderGuide() {
-    const guide = steps[guideStep];
-    document.getElementById("guideCounter").textContent =
-      "目前步驟 " + (guideStep + 1) + " / " + steps.length;
-    document.getElementById("guideBar").style.width = (100*(guideStep+1)/steps.length) + "%";
-    // Move existing DOM nodes instead of cloning, preserving download state and listeners.
-    moduleParking.append(releaseModule, folderModule);
-    wizardContent.replaceChildren();
-    const heading = document.createElement("h3");
-    heading.textContent = guide.title;
-    const p = document.createElement("p");
-    p.textContent = guide.body;
-    wizardContent.append(heading,p);
-    if (guide.action === "download") wizardContent.appendChild(releaseModule);
-    if (guide.action === "folder") wizardContent.appendChild(folderModule);
-    if (guide.action === "chrome") {
-      const btn = document.createElement('button');
-      btn.className='btn';btn.type='button';btn.textContent='複製 chrome://extensions/';
-      btn.style.marginTop='14px';
-      btn.onclick=async()=>{try{await navigator.clipboard.writeText('chrome://extensions/');btn.textContent='已複製，貼到 Chrome 網址列';}
-        catch{btn.textContent='請在 Chrome 網址列輸入 chrome://extensions/';}};
-      wizardContent.appendChild(btn);
-    }
-    if (guide.action === "verify") {
-      const btn = document.createElement('button');
-      btn.className='btn';btn.type='button';btn.textContent='展開安裝狀態檢查';
-      btn.style.marginTop='14px';btn.onclick=()=>openPanel('version');
-      wizardContent.appendChild(btn);
-    }
-    const tabs = document.getElementById('guideTabs');tabs.replaceChildren();
-    steps.forEach((step,i)=>{
-      const tab=document.createElement('button');tab.type='button';
-      tab.className='wizard-tab'+(i===guideStep?' active':i<guideStep?' done':'');
-      tab.textContent=(i+1)+'. '+step.title.replace('下載官方 Windows Beta 安裝包','下載').replace('解壓縮到固定資料夾','解壓縮').replace('檢查資料夾內必要檔案','檢查檔案').replace('將 MediaSaver 載入 Chrome','Chrome').replace('雙擊開始安裝.cmd','安裝程式').replace('測試本機連線與下載','測試');
-      tab.setAttribute('aria-current',i===guideStep?'step':'false');
-      tab.onclick=()=>{guideStep=i;renderGuide();};tabs.appendChild(tab);
-    });
-    document.getElementById("guidePrevious").disabled=guideStep===0;
-    document.getElementById("guideNext").textContent=guideStep===steps.length-1?'重新開始':'完成這一步 →';
+});
+
+function renderGuide() {
+  const guide = steps[guideStep];
+
+  setText(
+    "guideCounter",
+    "目前步驟 " + (guideStep + 1) + " / " + steps.length
+  );
+  document.getElementById("guideBar").style.width =
+    (100 * (guideStep + 1) / steps.length) + "%";
+
+  // 搬移原節點，保留下載資訊與事件。
+  moduleParking.append(releaseModule, folderModule);
+  wizardContent.replaceChildren();
+
+  const heading = document.createElement("h3");
+  heading.textContent = guide.title;
+  const paragraph = document.createElement("p");
+  paragraph.textContent = guide.body;
+  wizardContent.append(heading, paragraph);
+
+  if (guide.action === "download") wizardContent.appendChild(releaseModule);
+  if (guide.action === "folder") wizardContent.appendChild(folderModule);
+
+  if (guide.action === "chrome") {
+    const button = document.createElement("button");
+    button.className = "btn";
+    button.type = "button";
+    button.textContent = "複製 chrome://extensions/";
+    button.style.marginTop = "14px";
+
+    button.onclick = async () => {
+      try {
+        await navigator.clipboard.writeText("chrome://extensions/");
+        button.textContent = "已複製，貼到 Chrome 網址列";
+      } catch (_) {
+        button.textContent =
+          "請在 Chrome 網址列輸入 chrome://extensions/";
+      }
+    };
+    wizardContent.appendChild(button);
   }
-  document.getElementById("guidePrevious").onclick=()=>{guideStep=Math.max(0,guideStep-1);renderGuide();};
-  document.getElementById("guideNext").onclick=()=>{guideStep=(guideStep+1)%steps.length;renderGuide();};
+
+  if (guide.action === "verify") {
+    const button = document.createElement("button");
+    button.className = "btn";
+    button.type = "button";
+    button.textContent = "展開安裝狀態檢查";
+    button.style.marginTop = "14px";
+    button.onclick = () => openPanel("version");
+    wizardContent.appendChild(button);
+  }
+
+  const tabs = document.getElementById("guideTabs");
+  tabs.replaceChildren();
+
+  steps.forEach((step, index) => {
+    const tab = document.createElement("button");
+    tab.type = "button";
+    tab.className =
+      "wizard-tab" +
+      (index === guideStep ? " active" : index < guideStep ? " done" : "");
+    tab.textContent = (index + 1) + ". " + step.short;
+    tab.setAttribute(
+      "aria-current",
+      index === guideStep ? "step" : "false"
+    );
+    tab.onclick = () => {
+      guideStep = index;
+      renderGuide();
+    };
+    tabs.appendChild(tab);
+  });
+
+  document.getElementById("guidePrevious").disabled = guideStep === 0;
+  setText(
+    "guideNext",
+    guideStep === steps.length - 1 ? "重新開始" : "完成這一步 →"
+  );
+}
+
+document.getElementById("guidePrevious").onclick = () => {
+  guideStep = Math.max(0, guideStep - 1);
   renderGuide();
-  const updateSteps = [
-    {title:"下載快速更新包",body:"下載 Beta 3 的 QuickUpdate ZIP。僅含新版 MediaSaverHost 與更新指令碼，不需重新下載 yt-dlp、FFmpeg。",action:"download"},
-    {title:"解壓縮並關閉 Chrome",body:"將 ZIP 完整解壓縮到任意資料夾。關閉 Chrome，確認沒有正在進行的 MediaSaver 下載。",action:"none"},
-    {title:"執行快速更新",body:"雙擊解壓縮資料夾中的「快速更新MediaSaver.cmd」，等待 UPDATE SUCCESS。無需重新執行「開始安裝.cmd」，也不需變更擴充功能 ID。",action:"none"},
-    {title:"重新開啟並測試",body:"重新開啟 Chrome，測試影片解析、MP4／MP3／JPEG 下載及開啟 Downloads\\MediaSaver。若需診斷，展開下方版本檢查。",action:"verify"}
-  ];
-  let updateStep = 0;
-  const updateArea = document.getElementById("updateStepContent");
-  const quickModule = document.getElementById("quickDownload");
-  function renderUpdate() {
-    const x = updateSteps[updateStep];
-    moduleParking.appendChild(quickModule);
-    updateArea.replaceChildren();
-    const h = document.createElement('h3');h.textContent = x.title;
-    const p = document.createElement('p');p.textContent = x.body;
-    updateArea.append(h,p);
-    if(x.action === 'download')updateArea.appendChild(quickModule);
-    if(x.action === 'verify') {
-      const b=document.createElement('button');b.className='btn';b.textContent='展開版本檢查';
-      b.onclick=()=>openPanel('version'); updateArea.appendChild(b);
-    }
-    document.getElementById('updateCounter').textContent='步驟 '+(updateStep+1)+' / '+updateSteps.length;
-    document.getElementById('updateBar').style.width=(100*(updateStep+1)/updateSteps.length)+'%';
-    const tabs=document.getElementById('updateTabs');tabs.replaceChildren();
-    updateSteps.forEach((x,i)=>{
-      const b=document.createElement('button');b.type='button';b.className='wizard-tab'+(i===updateStep?' active':'');
-      b.textContent=(i+1)+'. '+x.title;b.onclick=()=>{updateStep=i;renderUpdate()};tabs.appendChild(b);
-    });
-    document.getElementById('updatePrevious').disabled=updateStep===0;
-    document.getElementById('updateNext').textContent=updateStep===3?'重新開始':'完成這一步 →';
+};
+document.getElementById("guideNext").onclick = () => {
+  guideStep = (guideStep + 1) % steps.length;
+  renderGuide();
+};
+
+const updateSteps = [
+  {
+    title: "下載快速更新包",
+    body:
+      "下載 Beta 3 的 QuickUpdate ZIP。僅含新版 MediaSaverHost 與更新指令碼，不需重新下載 yt-dlp、FFmpeg。",
+    action: "download"
+  },
+  {
+    title: "解壓縮並關閉 Chrome",
+    body:
+      "將 ZIP 完整解壓縮到任意資料夾。關閉 Chrome，確認沒有正在進行的 MediaSaver 下載。",
+    action: "none"
+  },
+  {
+    title: "執行快速更新",
+    body:
+      "雙擊解壓縮資料夾中的「快速更新MediaSaver.cmd」，等待 UPDATE SUCCESS。無需重新執行「開始安裝.cmd」，也不需變更擴充功能 ID。",
+    action: "none"
+  },
+  {
+    title: "重新開啟並測試",
+    body:
+      "重新開啟 Chrome，測試影片解析、MP4／MP3／JPEG 下載及開啟 Downloads\\MediaSaver。若需診斷，展開下方版本檢查。",
+    action: "verify"
   }
-  document.getElementById('updatePrevious').onclick=()=>{updateStep=Math.max(0,updateStep-1);renderUpdate()};
-  document.getElementById('updateNext').onclick=()=>{updateStep=(updateStep+1)%4;renderUpdate()};
-  function setMode(mode) {
-    const install = mode==='new';
-    document.getElementById('guidedInstall').hidden=!install;
-    document.getElementById('quickUpdate').hidden=install;
-    for(const [id,active] of [['newMode',install],['updateMode',!install]]) {
-      const b=document.getElementById(id);b.classList.toggle('primary',active);b.setAttribute('aria-selected',String(active));
-    }
-    if(!install)renderUpdate();
+];
+
+let updateStep = 0;
+const updateArea = document.getElementById("updateStepContent");
+const quickModule = document.getElementById("quickDownload");
+
+function renderUpdate() {
+  const step = updateSteps[updateStep];
+
+  moduleParking.appendChild(quickModule);
+  updateArea.replaceChildren();
+
+  const heading = document.createElement("h3");
+  heading.textContent = step.title;
+  const paragraph = document.createElement("p");
+  paragraph.textContent = step.body;
+  updateArea.append(heading, paragraph);
+
+  if (step.action === "download") updateArea.appendChild(quickModule);
+
+  if (step.action === "verify") {
+    const button = document.createElement("button");
+    button.type = "button";
+    button.className = "btn";
+    button.textContent = "展開版本檢查";
+    button.onclick = () => openPanel("version");
+    updateArea.appendChild(button);
   }
-  document.getElementById('newMode').onclick=()=>setMode('new');
-  document.getElementById('updateMode').onclick=()=>setMode('update');
-  loadVersionInfo();
-  checkMediaSaverExtension();
+
+  setText(
+    "updateCounter",
+    "步驟 " + (updateStep + 1) + " / " + updateSteps.length
+  );
+  document.getElementById("updateBar").style.width =
+    (100 * (updateStep + 1) / updateSteps.length) + "%";
+
+  const tabs = document.getElementById("updateTabs");
+  tabs.replaceChildren();
+
+  updateSteps.forEach((item, index) => {
+    const button = document.createElement("button");
+    button.type = "button";
+    button.className =
+      "wizard-tab" + (index === updateStep ? " active" : "");
+    button.textContent = (index + 1) + ". " + item.title;
+    button.onclick = () => {
+      updateStep = index;
+      renderUpdate();
+    };
+    tabs.appendChild(button);
+  });
+
+  document.getElementById("updatePrevious").disabled = updateStep === 0;
+  setText(
+    "updateNext",
+    updateStep === updateSteps.length - 1 ? "重新開始" : "完成這一步 →"
+  );
+}
+
+document.getElementById("updatePrevious").onclick = () => {
+  updateStep = Math.max(0, updateStep - 1);
+  renderUpdate();
+};
+document.getElementById("updateNext").onclick = () => {
+  updateStep = (updateStep + 1) % updateSteps.length;
+  renderUpdate();
+};
+
+function setMode(mode) {
+  const install = mode === "new";
+  document.getElementById("guidedInstall").hidden = !install;
+  document.getElementById("quickUpdate").hidden = install;
+
+  for (const [id, active] of [
+    ["newMode", install],
+    ["updateMode", !install]
+  ]) {
+    const button = document.getElementById(id);
+    button.classList.toggle("primary", active);
+    button.setAttribute("aria-selected", String(active));
+  }
+
+  if (!install) renderUpdate();
+}
+
+document.getElementById("newMode").onclick = () => setMode("new");
+document.getElementById("updateMode").onclick = () => setMode("update");
+
+const mobileLinks = {
+  "android-download":
+    "https://github.com/scoutdelsf/MediaSare-Android/releases/download/v0.1.0/MediaSare-Android-v0.1.0.apk"
+};
+
+function resolvePlatform(hash) {
+  const value = hash.replace(/^#/, "").split("?")[0];
+  if (["install", "version", "history", "help"].includes(value)) {
+    return "windows";
+  }
+  return ["home", "windows", "android", "iphone"].includes(value)
+    ? value
+    : "home";
+}
+
+function renderPlatform(moveFocus) {
+  const platform = resolvePlatform(location.hash);
+  const previousPlatform = activePlatform;
+  activePlatform = platform;
+
+  for (const name of ["home", "windows", "android", "iphone"]) {
+    document.getElementById(name + "View").hidden = name !== platform;
+  }
+  document.getElementById("windowsNavigation").hidden =
+    platform !== "windows";
+
+  if (platform === "windows" && !windowsInitialized) {
+    windowsInitialized = true;
+    loadVersionInfo();
+    checkMediaSaverExtension();
+  } else if (
+    platform === "windows" &&
+    previousPlatform !== "windows"
+  ) {
+    checkMediaSaverExtension();
+  }
+
+  if (platform !== "windows") {
+    if (extensionCheckTimer !== null) clearTimeout(extensionCheckTimer);
+    if (hostCheckTimer !== null) clearTimeout(hostCheckTimer);
+    extensionCheckTimer = null;
+    hostCheckTimer = null;
+    extensionCheckId = "";
+    hostCheckId = "";
+  }
+
+  const legacy = location.hash.slice(1);
+
+  if (
+    platform === "windows" &&
+    ["version", "history", "help"].includes(legacy)
+  ) {
+    openPanel(legacy);
+  } else if (moveFocus) {
+    const heading = platform === "windows"
+      ? document.querySelector("#windowsView h1")
+      : document.getElementById(platform + "Heading");
+
+    if (heading) {
+      heading.setAttribute("tabindex", "-1");
+      heading.focus({preventScroll: true});
+    }
+
+    if (platform === "windows" && legacy === "install") {
+      document.getElementById("install")
+        .scrollIntoView({behavior: "smooth", block: "start"});
+    } else {
+      window.scrollTo({top: 0, behavior: "auto"});
+    }
+  }
+
+  document.title = "MediaSaver｜" + {
+    home: "安裝與使用中心",
+    windows: "Windows 安裝與更新",
+    android: "Android 安裝與使用",
+    iphone: "iPhone 捷徑使用"
+  }[platform];
+}
+
+document.querySelectorAll("[data-copy]").forEach(button => {
+  button.addEventListener("click", async () => {
+    const id = button.dataset.copy;
+    const value = mobileLinks[id];
+    const status = document.getElementById(id + "-copy-status");
+    const field = document.getElementById(id + "-copy-field");
+
+    try {
+      await navigator.clipboard.writeText(value);
+      status.textContent = "下載連結已複製。";
+      field.hidden = true;
+    } catch (_) {
+      field.value = value;
+      field.hidden = false;
+      field.focus();
+      field.select();
+      status.textContent = "請長按或複製下方連結。";
+    }
+  });
+});
+
+window.addEventListener("hashchange", () => renderPlatform(true));
+
+renderGuide();
+showWebsiteVersion(FALLBACK_SITE_VERSION);
+renderPlatform(false);
 </script>
 
 </body>
